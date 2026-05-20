@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love Calculator by jonas</title>
+    <style>
+        body { 
+            font-family: 'segoe ui', tahoma, geneva, verdana, sans-serif; 
+            background: linear-gradient(135deg, #7303c0 0%, #ec38bc 50%, #fdeff9 100%); 
+            color: white; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            text-align: center; 
+            padding: 20px; 
+            box-sizing: border-box; 
+        }
+        .box { 
+            background: rgba(0, 0, 0, 0.85); 
+            padding: 2.5rem; 
+            border-radius: 20px; 
+            backdrop-filter: blur(15px); 
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6); 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            max-width: 450px; 
+            width: 100%; 
+            position: relative;
+        }
+        h2 { 
+            margin-top: 0; 
+            color: #ff758c; 
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+        p.subtitle {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-bottom: 25px;
+        }
+        .input-container { 
+            margin: 15px 0; 
+        }
+        input { 
+            width: 100%; 
+            padding: 14px; 
+            border: 1px solid rgba(255, 255, 255, 0.2); 
+            border-radius: 8px; 
+            font-size: 1.1rem; 
+            box-sizing: border-box; 
+            background: rgba(255, 255, 255, 0.1); 
+            color: white; 
+            text-align: center; 
+            transition: all 0.3s ease;
+        }
+        input:focus { 
+            outline: none; 
+            border-color: #ff758c; 
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 10px rgba(255, 117, 140, 0.3);
+        }
+        .heart-icon {
+            font-size: 2.5rem;
+            color: #ff758c;
+            margin: 10px 0;
+            display: inline-block;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            20% { transform: scale(1.3); }
+            40% { transform: scale(1.1); }
+            60% { transform: scale(1.4); }
+            80% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        .pulse-heart {
+            animation: heartbeat 0.6s infinite;
+        }
+
+        button { 
+            background: linear-gradient(45deg, #ff758c, #ff7eb3); 
+            color: white; 
+            border: none; 
+            padding: 14px; 
+            font-size: 1.1rem; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            width: 100%; 
+            box-shadow: 0 4px 15px rgba(255, 117, 140, 0.4); 
+            margin-top: 15px; 
+            transition: all 0.2s ease;
+        }
+        button:hover { 
+            background: linear-gradient(45deg, #ff5e7e, #ff6b97); 
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 117, 140, 0.6);
+        }
+        .result-display {
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: none;
+        }
+        
+        .percentage {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #ff758c;
+            margin: 5px 0;
+            text-shadow: 0 0 25px rgba(255, 117, 140, 0.8);
+            transform: scale(1);
+            transition: transform 0.1s ease;
+        }
+        .verdict {
+            font-size: 1rem;
+            line-height: 1.4;
+            opacity: 0.9;
+        }
+
+        /* --- STYLISCHES ADMIN PANEL --- */
+        .admin-panel {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border: 1px dashed #ff758c;
+            text-align: left;
+            position: relative;
+        }
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .admin-panel h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            color: #ff758c;
+        }
+        .close-admin-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0;
+            width: auto;
+            box-shadow: none;
+            margin: 0;
+            opacity: 0.6;
+        }
+        .close-admin-btn:hover {
+            opacity: 1;
+            transform: none;
+            background: none;
+            box-shadow: none;
+        }
+        .admin-panel input {
+            padding: 8px;
+            font-size: 0.9rem;
+            margin: 5px 0;
+        }
+        .admin-btn {
+            background: #ff758c;
+            padding: 10px;
+            font-size: 0.95rem;
+            margin-top: 5px;
+        }
+        
+        .cheat-list-title {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            padding-top: 10px;
+            color: #ff758c;
+        }
+        .cheat-list {
+            max-height: 120px;
+            overflow-y: auto;
+            margin-top: 5px;
+            font-size: 0.85rem;
+        }
+        .cheat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0,0,0,0.4);
+            padding: 6px 10px;
+            border-radius: 6px;
+            margin-bottom: 5px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .delete-cheat-btn {
+            background: #ff3333;
+            color: white;
+            border: none;
+            padding: 3px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        .delete-cheat-btn:hover {
+            background: #cc0000;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="box">
+        <h2>Love Calculator</h2>
+        <p class="subtitle">by jonas</p>
+        
+        <div class="input-container">
+            <input type="text" id="name1" placeholder="Name der 1. Person..." autocomplete="off">
+        </div>
+
+        <!-- Reagiert jetzt auf genau 2 schnelle Klicks (Doppelklick) -->
+        <div class="heart-icon" id="heart">❤️</div>
+
+        <div class="input-container">
+            <input type="text" id="name2" placeholder="Name der 2. Person..." autocomplete="off">
+        </div>
+
+        <button id="calc-button">Berechnen</button>
+
+        <div class="result-display" id="result-box">
+            <div id="result-names" style="font-weight: bold; font-size: 1.1rem;"></div>
+            <div class="percentage" id="result-percent">0%</div>
+            <div class="verdict" id="result-text">Ein perfektes Match!</div>
+        </div>
+
+        <!-- Admin Panel -->
+        <div class="admin-panel" id="admin-panel">
+            <div class="admin-header">
+                <h3>🔒 Cheater-Menü aktiv</h3>
+                <button class="close-admin-btn" id="close-admin-btn">✕</button>
+            </div>
+            <input type="text" id="fake-name1" placeholder="Name 1 (z.B. Jonas)">
+            <input type="text" id="fake-name2" placeholder="Name 2 (z.B. Mia)">
+            <input type="number" id="fake-prozent" placeholder="Prozent (0-100)" min="0" max="100">
+            <button class="admin-btn" id="save-cheat">Regel speichern</button>
+            
+            <div class="cheat-list-title">Aktive manuelle Regeln:</div>
+            <div class="cheat-list" id="cheat-list-container"></div>
+        </div>
+    </div>
+
+    <script>
+        const name1Input = document.getElementById('name1');
+        const name2Input = document.getElementById('name2');
+        const heartIcon = document.getElementById('heart');
+        const calcButton = document.getElementById('calc-button');
+        const resultBox = document.getElementById('result-box');
+        const resultNames = document.getElementById('result-names');
+        const resultPercent = document.getElementById('result-percent');
+        const resultText = document.getElementById('result-text');
+
+        const adminPanel = document.getElementById('admin-panel');
+        const closeAdminBtn = document.getElementById('close-admin-btn');
+        const fakeName1 = document.getElementById('fake-name1');
+        const fakeName2 = document.getElementById('fake-name2');
+        const fakeProzent = document.getElementById('fake-prozent');
+        const saveCheatBtn = document.getElementById('save-cheat');
+        const cheatListContainer = document.getElementById('cheat-list-container');
+
+        let heartClicks = 0;
+        let clickTimer;
+
+        // --- NEUER GEHEIM-TRIGGER: Exakt 2 schnelle Klicks ---
+        heartIcon.addEventListener('click', () => {
+            heartClicks++;
+            clearTimeout(clickTimer);
+            
+            // Setzt den Klick-Zähler nach 400 Millisekunden zurück, wenn nicht schnell genug geklickt wird
+            clickTimer = setTimeout(() => { heartClicks = 0; }, 400);
+
+            if (heartClicks === 2) {
+                heartClicks = 0;
+                const pw = prompt("🔑 Bitte gib den Geheimcode ein:");
+                if (pw === "YoYo") {
+                    adminPanel.style.display = "block";
+                    renderCheatList();
+                } else {
+                    alert("Falscher Code!");
+                }
+            }
+        });
+
+        // Schließen-Button für das Admin-Menü
+        closeAdminBtn.addEventListener('click', () => {
+            adminPanel.style.display = "none";
+        });
+
+        function renderCheatList() {
+            cheatListContainer.innerHTML = "";
+            const cheatDaten = JSON.parse(localStorage.getItem('loveCheats')) || {};
+            const keys = Object.keys(cheatDaten);
+
+            if (keys.length === 0) {
+                cheatListContainer.innerHTML = '<div style="opacity:0.5; font-style:italic; padding:5px;">Keine manuellen Regeln aktiv.</div>';
+                return;
+            }
+
+            keys.forEach(key => {
+                const namen = key.split('-');
+                const prozentwert = cheatDaten[key];
+                
+                const item = document.createElement('div');
+                item.className = 'cheat-item';
+                item.innerHTML = `
+                    <span><b>${caps(namen)}</b> + <b>${caps(namen)}</b> &rarr; <span style="color:#ff758c;font-weight:bold;">${prozentwert}%</span></span>
+                    <button class="delete-cheat-btn" onclick="deleteCheatRule('${key}')">Löschen</button>
+                `;
+                cheatListContainer.appendChild(item);
+            });
+        }
+
+        function caps(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
+        window.deleteCheatRule = function(key) {
+            const cheatDaten = JSON.parse(localStorage.getItem('loveCheats')) || {};
+            delete cheatDaten[key];
+            localStorage.setItem('loveCheats', JSON.stringify(cheatDaten));
+            renderCheatList();
+        };
+
+        saveCheatBtn.addEventListener('click', () => {
+            const n1 = fakeName1.value.trim().toLowerCase();
+            const n2 = fakeName2.value.trim().toLowerCase();
+            const proz = parseInt(fakeProzent.value.trim());
+
+            if (!n1 || !n2 || isNaN(proz)) {
+                alert("Bitte alle Felder im Admin-Menü ausfüllen!");
+                return;
+            }
+
+            const cheatDaten = JSON.parse(localStorage.getItem('loveCheats')) || {};
+            const key = [n1, n2].sort().join('-');
+            cheatDaten[key] = proz;
+            
+            localStorage.setItem('loveCheats', JSON.stringify(cheatDaten));
+            
+            fakeName1.value = ""; fakeName2.value = ""; fakeProzent.value = "";
+            renderCheatList();
+            alert("Regel erfolgreich gespeichert!");
+        });
+
+        calcButton.addEventListener('click', () => {
+            const n1 = name1Input.value.trim();
+            const n2 = name2Input.value.trim();
+
+            if (!n1 || !n2) {
+                alert("Bitte gib beide Namen ein!");
+                return;
+            }
+
+            heartIcon.classList.add('pulse-heart');
+            resultBox.style.display = 'none';
+
+            setTimeout(() => {
+                heartIcon.classList.remove('pulse-heart');
+                
+                const n1Lower = n1.toLowerCase();
+                const n2Lower = n2.toLowerCase();
+                
+                let zielProzent = 0;
+                let spruch = "";
+
+                const cheatDaten = JSON.parse(localStorage.getItem('loveCheats')) || {};
+                const suchKey = [n1Lower, n2Lower].sort().join('-');
+
+                if ((n1Lower === "jonas" && n2Lower === "mia") || (n1Lower === "mia" && n2Lower === "jonas")) {
+                    zielProzent = 0;
+                } else if (cheatDaten[suchKey] !== undefined) {
+                    zielProzent = cheatDaten[suchKey];
+                } else {
+                    const kombiniert = (n1 + n2).toLowerCase().replace(/\s/g, "");
+                    let summe = 0;
+                    for (let i = 0; i < kombiniert.length; i++) {
+                        summe += kombiniert.charCodeAt(i);
+                    }
+                    zielProzent = 30 + (summe % 71); 
+                }
+
+                if (zielProzent >= 90) spruch = "✨ Absolute Seelenverwandte! Ihr passt perfekt zusammen! ✨";
+                else if (zielProzent >= 75) spruch = "❤️ Große Liebe im Anflug! Da funkt es gewaltig!";
+                else if (zielProzent >= 50) spruch = "👀 Es gibt eine gute Chance! Probiert es einfach aus!";
+                else spruch = "❄️ Absolut unmöglich! Freundschaftszone wäre sicherer!";
+
+                resultNames.innerText = `${n1} + ${n2}`;
+                resultText.innerHTML = spruch;
+                resultBox.style.display = 'block';
+
+                // --- ANIMATION ---
+                let aktuellerWert = 0;
+                resultPercent.innerText = "0%";
+                
+                const dauer = 1500;
+                const intervallZeit = 20; 
+                const schritte = dauer / intervallZeit;
+                const aufschlagProSchritt = zielProzent / schritte;
+
+                const zaehler = setInterval(() => {
+                    aktuellerWert += aufschlagProSchritt;
+                    resultPercent.style.transform = `scale(${1 + (Math.random() * 0.08)})`;
+
+                    if (aktuellerWert >= zielProzent) {
+                        clearInterval(zaehler);
+                        resultPercent.innerText = `${zielProzent}%`;
+                        resultPercent.style.transform = "scale(1)";
+                    } else {
+                        resultPercent.innerText = `${Math.floor(aktuellerWert)}%`;
+                    }
+                }, intervallZeit);
+
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
