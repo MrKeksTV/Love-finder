@@ -3,134 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ Lover Finder ⚡</title>
+    <title>Gothub Love Finder</title>
     <style>
-        /* Modernes CSS ohne externe Frameworks */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Special+Elite&display=swap');
 
         body {
-            background: linear-gradient(135deg, #0f172a, #581c87, #9d174d);
-            color: #ffffff;
-            min-height: 100vh;
+            background-color: #0d0d0d;
+            background-image: radial-gradient(circle, #1a0011 0%, #050505 100%);
+            color: #e0e0e0;
+            font-family: 'Special Elite', monospace;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
             overflow: hidden;
-            padding: 20px;
         }
 
-        /* Hauptkarte mit Glassmorphism-Effekt */
-        .card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            padding: 40px 30px;
-            border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            width: 100%;
-            max-width: 400px;
+        .container {
+            background: rgba(15, 15, 15, 0.85);
+            border: 2px solid #660011;
+            box-shadow: 0 0 25px #440000, inset 0 0 15px #220000;
+            border-radius: 10px;
+            padding: 30px;
+            width: 400px;
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.5s ease;
-        }
-
-        /* Herz-Animation */
-        @keyframes heartbeat {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.15); }
-        }
-        .heart {
-            font-size: 60px;
-            margin-bottom: 10px;
-            display: inline-block;
-            animation: heartbeat 0.8s infinite;
+            position: relative;
+            backdrop-filter: blur(5px);
         }
 
         h1 {
-            font-size: 32px;
-            font-weight: 900;
-            text-transform: uppercase;
+            font-family: 'Cinzel', serif;
+            color: #990011;
+            text-shadow: 0 0 10px #ff0033, 0 0 20px #000;
+            margin-top: 0;
             letter-spacing: 2px;
-            background: linear-gradient(45deg, #f472b6, #c084fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 5px;
         }
 
         .subtitle {
-            color: #cbd5e1;
-            font-size: 14px;
-            margin-bottom: 30px;
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 25px;
+            text-transform: uppercase;
         }
 
-        /* Eingabefelder */
         .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
             margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            color: #aa66cc;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
         }
 
         input {
             width: 100%;
-            padding: 14px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            color: white;
-            font-size: 16px;
-            text-align: center;
-            outline: none;
-            transition: all 0.3s;
+            padding: 10px;
+            background: #151515;
+            border: 1px solid #444;
+            border-radius: 5px;
+            color: #fff;
+            font-family: 'Special Elite', monospace;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
         }
 
         input:focus {
-            border-color: #ec4899;
-            background: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 0 10px rgba(236, 72, 153, 0.3);
+            outline: none;
+            border-color: #990011;
+            box-shadow: 0 0 10px #550000;
         }
 
-        /* Buttons */
         button {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(45deg, #ec4899, #a855f7);
+            background: linear-gradient(45deg, #440000, #880011);
+            color: #fff;
             border: none;
-            border-radius: 12px;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            padding: 12px 25px;
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
             cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 10px 20px rgba(236, 72, 153, 0.3);
+            border-radius: 5px;
+            box-shadow: 0 0 10px #330000;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
         }
 
         button:hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
+            background: linear-gradient(45deg, #660011, #cc0022);
+            box-shadow: 0 0 15px #990011;
+            letter-spacing: 1px;
         }
 
-        button:active {
-            transform: translateY(0);
+        /* --- Animationen & Resultat --- */
+
+        .heart-icon {
+            font-size: 3rem;
+            color: #440000;
+            margin: 20px 0;
+            transition: all 0.5s ease;
         }
 
-        /* Lade-Spinner */
-        .hidden { display: none !important; }
-        
-        .spinner {
+        .pulse {
+            animation: heartBeat 1.2s infinite;
+            color: #990011 !important;
+            text-shadow: 0 0 15px #ff0033;
+        }
+
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            20% { transform: scale(1.15); }
+            40% { transform: scale(1); }
+            60% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .loader {
+            display: none;
+            margin: 20px auto;
             width: 50px;
             height: 50px;
-            border: 4px solid #ec4899;
-            border-top-color: transparent;
+            border: 3px solid #333;
             border-radius: 50%;
-            margin: 30px auto;
+            border-top-color: #990011;
             animation: spin 1s linear infinite;
         }
 
@@ -138,234 +136,126 @@
             to { transform: rotate(360deg); }
         }
 
-        .loading-text {
-            font-size: 18px;
-            color: #f472b6;
-            font-weight: 500;
-        }
-
-        /* Ergebnis-Ansicht */
-        .result-screen {
-            animation: fadeIn 0.5s ease forwards;
+        #result-container {
+            display: none;
+            margin-top: 25px;
+            animation: fadeIn 1s ease forwards;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .percent {
-            font-size: 72px;
-            font-weight: 900;
-            background: linear-gradient(45deg, #facc15, #ec4899);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 15px;
+        .percentage {
+            font-family: 'Cinzel', serif;
+            font-size: 3.5rem;
+            color: #ff0033;
+            text-shadow: 0 0 10px #660011;
+            margin: 10px 0;
         }
 
-        .quote-box {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+        .quote {
             font-style: italic;
-            font-size: 16px;
-            color: #e2e8f0;
-            margin-bottom: 25px;
-            min-height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .reset-btn {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 10px 20px;
-            font-size: 14px;
-            width: auto;
-            box-shadow: none;
-        }
-
-        /* CSS Konfetti Partikel */
-        .confetti {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: #ffd700;
-            top: -10px;
-            z-index: 999;
-            border-radius: 2px;
-            animation: fall linear forwards;
-        }
-
-        @keyframes fall {
-            to {
-                transform: translateY(105vh) rotate(720deg);
-            }
+            color: #bbb;
+            font-size: 1rem;
+            line-height: 1.4;
+            padding: 0 10px;
         }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <!-- Header -->
-        <div>
-            <div class="heart">❤️</div>
-            <h1>Lover Finder</h1>
-            <p class="subtitle">Finde heraus, ob es die wahre Liebe ist!</p>
-        </div>
-
-        <!-- EINGABE -->
-        <div id="input-screen" class="input-group">
-            <input type="text" id="name1" placeholder="Dein Name" autocomplete="off">
-            <input type="text" id="name2" placeholder="Name deines Crushes" autocomplete="off">
-            <button onclick="calculateLove()">Match testen ⚡</button>
-        </div>
-
-        <!-- LOADING -->
-        <div id="loading-screen" class="hidden">
-            <div class="spinner"></div>
-            <p id="loading-text" class="loading-text">Herzschläge werden synchronisiert...</p>
-        </div>
-
-        <!-- ERGEBNIS -->
-        <div id="result-screen" class="result-screen hidden">
-            <div class="percent" id="love-percent">0%</div>
-            <div class="quote-box">
-                <p id="love-quote"></p>
-            </div>
-            <button onclick="resetApp()" class="reset-btn">Nochmal versuchen 🔄</button>
-        </div>
+<div class="container">
+    <h1>Gothub Love Finder</h1>
+    <div class="subtitle">Berechne die seelische Finsternis eurer Liebe</div>
+    
+    <div class="input-group">
+        <label for="name1">Dein Name (oder Fledermaus 1):</label>
+        <input type="text" id="name1" placeholder="z.B. Morticia" autocomplete="off">
     </div>
+    
+    <div class="input-group">
+        <label for="name2">Name des Opfers (oder Fledermaus 2):</label>
+        <input type="text" id="name2" placeholder="z.B. Gomez" autocomplete="off">
+    </div>
+    
+    <button onclick="calculateLove()">Ritual starten</button>
 
-    <script>
-        const loadingPhrases = [
-            "Herzschläge werden synchronisiert...",
-            "Liebes-Algorithmus wird hochgefahren...",
-            "Flirt-Faktor wird berechnet...",
-            "Amors Pfeile werden kalibriert..."
-        ];
+    <div class="heart-icon" id="heart">🖤</div>
+    <div class="loader" id="loader"></div>
 
-        const quotes = {
-            low: [
-                "Uff. Friendzone-Gefahr auf Level 9000! 🥶",
-                "Vielleicht solltet ihr erstmal ein Eis essen gehen... als Freunde. 🍦",
-                "Die Sterne sagen: Versuchs lieber nochmal. 🪐"
-            ],
-            mid: [
-                "Da sprühen auf jeden Fall schon ein paar Funken! ⚡",
-                "Gute Basis! Schreib ihm/ihr einfach mal wieder. 😏",
-                "Da geht auf jeden Fall was. Trau dich! 🚀"
-            ],
-            high: [
-                "Heiratsantrag ist quasi schon raus! 💍",
-                "Ihr passt zusammen wie Pizza und geschmolzener Käse! 🍕",
-                "Absolute Seelenverwandte. Lösch Tinder direkt! 🔥"
-            ]
-        };
+    <div id="result-container">
+        <div class="percentage" id="percent">0%</div>
+        <div class="quote" id="goth-quote">"Spruch lädt..."</div>
+    </div>
+</div>
 
-        // Mathematisch gleicher Score bei gleichen Namen
-        function getDeterministicScore(n1, n2) {
-            const combined = [n1.toLowerCase().trim(), n2.toLowerCase().trim()].sort().join("");
-            let hash = 0;
-            for (let i = 0; i < combined.length; i++) {
-                hash = combined.charCodeAt(i) + ((hash << 5) - hash);
-            }
-            return Math.abs(hash % 101);
+<script>
+function calculateLove() {
+    const name1 = document.getElementById('name1').value.trim();
+    const name2 = document.getElementById('name2').value.trim();
+    
+    if (name1 === "" || name2 === "") {
+        alert("Bitte gib beide Namen ein, sonst verhungern die Krähen!");
+        return;
+    }
+
+    // Reset & Start Animationen
+    document.getElementById('result-container').style.display = 'none';
+    document.getElementById('heart').classList.remove('pulse');
+    document.getElementById('heart').innerHTML = "🖤";
+    document.getElementById('loader').style.display = 'block';
+
+    // Fake-Berechnung (2 Sekunden "Ritual"-Dauer)
+    setTimeout(() => {
+        document.getElementById('loader').style.display = 'none';
+        
+        // Generiere einen festen Wert basierend auf den Namen (damit bei gleichen Namen immer das gleiche rauskommt)
+        const combinedString = (name1 + name2).toLowerCase().sortString();
+        let hash = 0;
+        for (let i = 0; i < combinedString.length; i++) {
+            hash += combinedString.charCodeAt(i);
+        }
+        const percentage = hash % 101; // Wert zwischen 0 und 100
+
+        // Herz-Animation triggern
+        const heart = document.getElementById('heart');
+        heart.classList.add('pulse');
+        
+        if(percentage > 50) {
+            heart.innerHTML = "❤️"; // Rotes Herz bei viel Liebe
+        } else {
+            heart.innerHTML = "💔"; // Gebrochenes Herz bei wenig Liebe
         }
 
-        function calculateLove() {
-            const n1 = document.getElementById('name1').value.trim();
-            const n2 = document.getElementById('name2').value.trim();
-
-            if (!n1 || !n2) {
-                alert("Bitte beide Namen ausfüllen! ❤️");
-                return;
-            }
-
-            document.getElementById('input-screen').classList.add('hidden');
-            document.getElementById('loading-screen').classList.remove('hidden');
-
-            let phraseIndex = 0;
-            const textElement = document.getElementById('loading-text');
-
-            const interval = setInterval(() => {
-                phraseIndex++;
-                if (phraseIndex < loadingPhrases.length) {
-                    textElement.innerText = loadingPhrases[phraseIndex];
-                }
-            }, 650);
-
-            setTimeout(() => {
-                clearInterval(interval);
-                showResult(n1, n2);
-            }, 2600);
+        // Spruch auswählen
+        let quote = "";
+        if (percentage <= 20) {
+            quote = `"Ein absoluter Albtraum. Eure Seelen meiden sich selbst im tiefsten Schatten. Geht euch lieber aus dem Weg."`;
+        } else if (percentage <= 40) {
+            quote = `"Kaum synchrone Herzschläge. Es reicht maximal für ein gemeinsames Schweigen auf dem Friedhof."`;
+        } else if (percentage <= 65) {
+            quote = `"Eine düstere Melancholie verbindet euch. Nicht perfekt, aber genug Verzweiflung für eine Weile."`;
+        } else if (percentage <= 85) {
+            quote = `"Eure Seelen tanzen im Rhythmus der Nacht. Eine starke, mystische Anziehungskraft liegt in der Luft."`;
+        } else {
+            quote = `"Bis dass der Tod euch scheidet? Lächerlich. Eure Liebe überdauert die Ewigkeit. Perfekte gothische Symbiose."`;
         }
 
-        function showResult(n1, n2) {
-            document.getElementById('loading-screen').classList.add('hidden');
-            document.getElementById('result-screen').classList.remove('hidden');
+        // Ergebnisse anzeigen
+        document.getElementById('percent').innerText = percentage + "%";
+        document.getElementById('goth-quote').innerHTML = quote;
+        document.getElementById('result-container').style.display = 'block';
 
-            const score = getDeterministicScore(n1, n2);
-            let currentPercent = 0;
-            const percentElement = document.getElementById('love-percent');
-            
-            const counter = setInterval(() => {
-                if (currentPercent >= score) {
-                    clearInterval(counter);
-                    triggerEffects(score);
-                } else {
-                    currentPercent++;
-                    percentElement.innerText = currentPercent + "%";
-                }
-            }, 20);
-        }
+    }, 2000);
+}
 
-        function triggerEffects(score) {
-            const quoteElement = document.getElementById('love-quote');
-            let category = 'mid';
-            
-            if (score < 40) category = 'low';
-            if (score > 75) category = 'high';
+// Hilfsfunktion, damit die Reihenfolge der Namen egal ist (A + B ergibt dasselbe wie B + A)
+String.prototype.sortString = function() {
+    return this.split('').sort().join('');
+};
+</script>
 
-            const randomQuote = quotes[category][Math.floor(Math.random() * quotes[category].length)];
-            quoteElement.innerText = randomQuote;
-
-            if (score > 50) {
-                createPureCSSConfetti();
-            }
-        }
-
-        // Native Konfetti-Animation ohne externe Skripte
-        function createPureCSSConfetti() {
-            const colors = ['#ec4899', '#a855f7', '#ffd700', '#22c55e', '#3b82f6'];
-            for (let i = 0; i < 100; i++) {
-                const confetti = document.createElement('div');
-                confetti.classList.add('confetti');
-                
-                confetti.style.left = Math.random() * 100 + 'vw';
-                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                confetti.style.width = Math.random() * 8 + 6 + 'px';
-                confetti.style.height = confetti.style.width;
-                
-                const duration = Math.random() * 2 + 2;
-                confetti.style.animationDuration = duration + 's';
-                confetti.style.animationDelay = Math.random() * 0.5 + 's';
-                
-                document.body.appendChild(confetti);
-                
-                setTimeout(() => { confetti.remove(); }, (duration + 0.5) * 1000);
-            }
-        }
-
-        function resetApp() {
-            document.getElementById('name1').value = "";
-            document.getElementById('name2').value = "";
-            document.getElementById('result-screen').classList.add('hidden');
-            document.getElementById('input-screen').classList.remove('hidden');
-            document.getElementById('love-percent').innerText = "0%";
-            document.getElementById('love-quote').innerText = "";
-        }
-    </script>
 </body>
 </html>
