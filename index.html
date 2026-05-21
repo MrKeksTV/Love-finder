@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ Lover Finder ⚡</title>
+    <!-- Tailwind CSS für modernes Design -->
+    <script src="https://jsdelivr.net"></script>
+    <!-- Canvas Confetti Library -->
+    <script src="https://jsdelivr.net"></script>
+    <style>
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        .animate-heart { animation: heartbeat 0.8s infinite; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-pink-900 text-white min-h-screen flex flex-col items-center justify-center font-sans overflow-hidden p-4">
+
+    <!-- Hauptkarte -->
+    <div class="bg-white/10 backdrop-blur-lg p-8 rounded-3xl shadow-2xl w-full max-w-md border border-white/20 text-center transition-all duration-500">
+        
+        <!-- Header -->
+        <div class="mb-6">
+            <div class="text-6xl mb-2 animate-heart inline-block">❤️</div>
+            <h1 class="text-3xl font-black bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent uppercase tracking-wider">Lover Finder</h1>
+            <p class="text-slate-300 text-sm mt-1">Finde heraus, ob es die wahre Liebe ist!</p>
+        </div>
+
+        <!-- Eingabe-Bereich -->
+        <div id="input-screen" class="space-y-4">
+            <input type="text" id="name1" placeholder="Dein Name" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-pink-500 text-center text-lg placeholder-slate-400 transition-all">
+            <input type="text" id="name2" placeholder="Name deines Crushes" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-pink-500 text-center text-lg placeholder-slate-400 transition-all">
+            
+            <button onclick="calculateLove()" class="w-full py-4 bg-gradient-to-r from-pink-500 to-purple-600 rounded-xl font-bold uppercase tracking-wide hover:from-pink-600 hover:to-purple-700 active:scale-95 transition-all shadow-lg shadow-pink-500/30 cursor-pointer">
+                Match testen ⚡
+            </button>
+        </div>
+
+        <!-- Lade-Bildschirm -->
+        <div id="loading-screen" class="hidden my-8 space-y-4">
+            <div class="inline-block w-16 h-16 border-4 border-pink-500 border-t-transparent rounded-full animate-spin"></div>
+            <p id="loading-text" class="text-xl font-medium animate-pulse text-pink-300"></p>
+        </div>
+
+        <!-- Ergebnis-Bildschirm -->
+        <div id="result-screen" class="hidden space-y-6 scale-95 opacity-0 transition-all duration-500">
+            <div class="text-7xl font-extrabold bg-gradient-to-r from-yellow-300 to-pink-500 bg-clip-text text-transparent" id="love-percent">0%</div>
+            
+            <!-- Spruch-Box mit Animation -->
+            <div class="bg-black/30 p-4 rounded-xl border border-white/5 min-h-[70px] flex items-center justify-center">
+                <p id="love-quote" class="text-lg italic font-medium text-slate-200"></p>
+            </div>
+
+            <button onclick="resetApp()" class="px-6 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm transition-all cursor-pointer">
+                Nochmal versuchen 🔄
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        const loadingPhrases = [
+            "Herzschläge werden synchronisiert...",
+            "Liebes-Algorithmus wird hochgefahren...",
+            "Flirt-Faktor wird berechnet...",
+            "Amors Pfeile werden kalibriert..."
+        ];
+
+        const quotes = {
+            low: [
+                "Uff. Friendzone-Gefahr auf Level 9000! 🥶",
+                "Vielleicht solltet ihr erstmal ein Eis essen gehen... als Freunde. 🍦",
+                "Die Sterne sagen: Versuchs lieber nochmal. 🪐"
+            ],
+            mid: [
+                "Da sprühen auf jeden Fall schon ein paar Funken! ⚡",
+                "Gute Basis! Schreib ihm/ihr einfach mal wieder. 😏",
+                "Da geht auf jeden Fall was. Trau dich! 🚀"
+            ],
+            high: [
+                "Heiratsantrag ist quasi schon raus! 💍",
+                "Ihr passt zusammen wie Pizza und geschmolzener Käse! 🍕",
+                "Absolute Seelenverwandte. Lösch Tinder direkt! 🔥"
+            ]
+        };
+
+        // Generiert IMMER den gleichen Prozentsatz für dieselben zwei Namen
+        function getDeterministicScore(n1, n2) {
+            const combined = [n1.toLowerCase().trim(), n2.toLowerCase().trim()].sort().join("");
+            let hash = 0;
+            for (let i = 0; i < combined.length; i++) {
+                hash = combined.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            return Math.abs(hash % 101); // 0 bis 100
+        }
+
+        function calculateLove() {
+            const n1 = document.getElementById('name1').value;
+            const n2 = document.getElementById('name2').value;
+
+            if (!n1 || !n2) {
+                alert("Bitte beide Namen ausfüllen! ❤️");
+                return;
+            }
+
+            // Screens umschalten
+            document.getElementById('input-screen').classList.add('hidden');
+            document.getElementById('loading-screen').classList.remove('hidden');
+
+            // Fake-Lade-Animation mit Textwechsel
+            let phraseIndex = 0;
+            const textElement = document.getElementById('loading-text');
+            textElement.innerText = loadingPhrases[0];
+
+            const interval = setInterval(() => {
+                phraseIndex++;
+                if (phraseIndex < loadingPhrases.length) {
+                    textElement.innerText = loadingPhrases[phraseIndex];
+                }
+            }, 700);
+
+            // Nach 3 Sekunden Ergebnis anzeigen
+            setTimeout(() => {
+                clearInterval(interval);
+                showResult(n1, n2);
+            }, 2800);
+        }
+
+        function showResult(n1, n2) {
+            document.getElementById('loading-screen').classList.add('hidden');
+            const resultScreen = document.getElementById('result-screen');
+            resultScreen.classList.remove('hidden');
+            
+            // Einblende-Animation triggern
+            setTimeout(() => {
+                resultScreen.classList.remove('scale-95', 'opacity-0');
+                resultScreen.classList.add('scale-100', 'opacity-100');
+            }, 50);
+
+            const score = getDeterministicScore(n1, n2);
+            
+            // Prozent-Zähler-Animation
+            let currentPercent = 0;
+            const percentElement = document.getElementById('love-percent');
+            const counter = setInterval(() => {
+                if (currentPercent >= score) {
+                    clearInterval(counter);
+                    triggerEffects(score);
+                } else {
+                    currentPercent++;
+                    percentElement.innerText = currentPercent + "%";
+                }
+            }, 20);
+        }
+
+        function triggerEffects(score) {
+            const quoteElement = document.getElementById('love-quote');
+            let category = 'mid';
+            
+            if (score < 40) category = 'low';
+            if (score > 75) category = 'high';
+
+            // Zufälligen Spruch aus der Kategorie wählen
+            const randomQuote = quotes[category][Math.floor(Math.random() * quotes[category].length)];
+            quoteElement.innerText = randomQuote;
+
+            // Konfetti werfen bei gutem Score
+            if (score > 50) {
+                confetti({
+                    particleCount: 150,
+                    spread: 80,
+                    origin: { y: 0.6 },
+                    colors: ['#ff007f', '#ff00ff', '#ffffff', '#ffaa00']
+                });
+            }
+        }
+
+        function resetApp() {
+            document.getElementById('name1').value = "";
+            document.getElementById('name2').value = "";
+            
+            const resultScreen = document.getElementById('result-screen');
+            resultScreen.classList.add('scale-95', 'opacity-0');
+            
+            setTimeout(() => {
+                resultScreen.classList.add('hidden');
+                document.getElementById('input-screen').classList.remove('hidden');
+                document.getElementById('love-percent').innerText = "0%";
+                document.getElementById('love-quote').innerText = "";
+            }, 300);
+        }
+    </script>
+</body>
+</html>
