@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ Lover Finder ⚡</title>
+    <style>
+        /* Modernes CSS ohne externe Frameworks */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a, #581c87, #9d174d);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        /* Hauptkarte mit Glassmorphism-Effekt */
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 40px 30px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.5s ease;
+        }
+
+        /* Herz-Animation */
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        .heart {
+            font-size: 60px;
+            margin-bottom: 10px;
+            display: inline-block;
+            animation: heartbeat 0.8s infinite;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: linear-gradient(45deg, #f472b6, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #cbd5e1;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        /* Eingabefelder */
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            text-align: center;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            border-color: #ec4899;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 10px rgba(236, 72, 153, 0.3);
+        }
+
+        /* Buttons */
+        button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(45deg, #ec4899, #a855f7);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 10px 20px rgba(236, 72, 153, 0.3);
+        }
+
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* Lade-Spinner */
+        .hidden { display: none !important; }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #ec4899;
+            border-top-color: transparent;
+            border-radius: 50%;
+            margin: 30px auto;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 18px;
+            color: #f472b6;
+            font-weight: 500;
+        }
+
+        /* Ergebnis-Ansicht */
+        .result-screen {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .percent {
+            font-size: 72px;
+            font-weight: 900;
+            background: linear-gradient(45deg, #facc15, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .quote-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            font-style: italic;
+            font-size: 16px;
+            color: #e2e8f0;
+            margin-bottom: 25px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .reset-btn {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            font-size: 14px;
+            width: auto;
+            box-shadow: none;
+        }
+
+        /* CSS Konfetti Partikel */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ffd700;
+            top: -10px;
+            z-index: 999;
+            border-radius: 2px;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(105vh) rotate(720deg);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <!-- Header -->
+        <div>
+            <div class="heart">❤️</div>
+            <h1>Lover Finder</h1>
+            <p class="subtitle">Finde heraus, ob es die wahre Liebe ist!</p>
+        </div>
+
+        <!-- EINGABE -->
+        <div id="input-screen" class="input-group">
+            <input type="text" id="name1" placeholder="Dein Name" autocomplete="off">
+            <input type="text" id="name2" placeholder="Name deines Crushes" autocomplete="off">
+            <button onclick="calculateLove()">Match testen ⚡</button>
+        </div>
+
+        <!-- LOADING -->
+        <div id="loading-screen" class="hidden">
+            <div class="spinner"></div>
+            <p id="loading-text" class="loading-text">Herzschläge werden synchronisiert...</p>
+        </div>
+
+        <!-- ERGEBNIS -->
+        <div id="result-screen" class="result-screen hidden">
+            <div class="percent" id="love-percent">0%</div>
+            <div class="quote-box">
+                <p id="love-quote"></p>
+            </div>
+            <button onclick="resetApp()" class="reset-btn">Nochmal versuchen 🔄</button>
+        </div>
+    </div>
+
+    <script>
+        const loadingPhrases = [
+            "Herzschläge werden synchronisiert...",
+            "Liebes-Algorithmus wird hochgefahren...",
+            "Flirt-Faktor wird berechnet...",
+            "Amors Pfeile werden kalibriert..."
+        ];
+
+        const quotes = {
+            low: [
+                "Uff. Friendzone-Gefahr auf Level 9000! 🥶",
+                "Vielleicht solltet ihr erstmal ein Eis essen gehen... als Freunde. 🍦",
+                "Die Sterne sagen: Versuchs lieber nochmal. 🪐"
+            ],
+            mid: [
+                "Da sprühen auf jeden Fall schon ein paar Funken! ⚡",
+                "Gute Basis! Schreib ihm/ihr einfach mal wieder. 😏",
+                "Da geht auf jeden Fall was. Trau dich! 🚀"
+            ],
+            high: [
+                "Heiratsantrag ist quasi schon raus! 💍",
+                "Ihr passt zusammen wie Pizza und geschmolzener Käse! 🍕",
+                "Absolute Seelenverwandte. Lösch Tinder direkt! 🔥"
+            ]
+        };
+
+        // Mathematisch gleicher Score bei gleichen Namen
+        function getDeterministicScore(n1, n2) {
+            const combined = [n1.toLowerCase().trim(), n2.toLowerCase().trim()].sort().join("");
+            let hash = 0;
+            for (let i = 0; i < combined.length; i++) {
+                hash = combined.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            return Math.abs(hash % 101);
+        }
+
+        function calculateLove() {
+            const n1 = document.getElementById('name1').value.trim();
+            const n2 = document.getElementById('name2').value.trim();
+
+            if (!n1 || !n2) {
+                alert("Bitte beide Namen ausfüllen! ❤️");
+                return;
+            }
+
+            document.getElementById('input-screen').classList.add('hidden');
+            document.getElementById('loading-screen').classList.remove('hidden');
+
+            let phraseIndex = 0;
+            const textElement = document.getElementById('loading-text');
+
+            const interval = setInterval(() => {
+                phraseIndex++;
+                if (phraseIndex < loadingPhrases.length) {
+                    textElement.innerText = loadingPhrases[phraseIndex];
+                }
+            }, 650);
+
+            setTimeout(() => {
+                clearInterval(interval);
+                showResult(n1, n2);
+            }, 2600);
+        }
+
+        function showResult(n1, n2) {
+            document.getElementById('loading-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+
+            const score = getDeterministicScore(n1, n2);
+            let currentPercent = 0;
+            const percentElement = document.getElementById('love-percent');
+            
+            const counter = setInterval(() => {
+                if (currentPercent >= score) {
+                    clearInterval(counter);
+                    triggerEffects(score);
+                } else {
+                    currentPercent++;
+                    percentElement.innerText = currentPercent + "%";
+                }
+            }, 20);
+        }
+
+        function triggerEffects(score) {
+            const quoteElement = document.getElementById('love-quote');
+            let category = 'mid';
+            
+            if (score < 40) category = 'low';
+            if (score > 75) category = 'high';
+
+            const randomQuote = quotes[category][Math.floor(Math.random() * quotes[category].length)];
+            quoteElement.innerText = randomQuote;
+
+            if (score > 50) {
+                createPureCSSConfetti();
+            }
+        }
+
+        // Native Konfetti-Animation ohne externe Skripte
+        function createPureCSSConfetti() {
+            const colors = ['#ec4899', '#a855f7', '#ffd700', '#22c55e', '#3b82f6'];
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.width = Math.random() * 8 + 6 + 'px';
+                confetti.style.height = confetti.style.width;
+                
+                const duration = Math.random() * 2 + 2;
+                confetti.style.animationDuration = duration + 's';
+                confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => { confetti.remove(); }, (duration + 0.5) * 1000);
+            }
+        }
+
+        function resetApp() {
+            document.getElementById('name1').value = "";
+            document.getElementById('name2').value = "";
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('input-screen').classList.remove('hidden');
+            document.getElementById('love-percent').innerText = "0%";
+            document.getElementById('love-quote').innerText = "";
+        }
+    </script>
+</body>
+</html>
