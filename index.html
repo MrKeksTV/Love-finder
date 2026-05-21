@@ -3,258 +3,451 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gothub Love Finder</title>
+    <title>iPadOS Simulator</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Special+Elite&display=swap');
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            user-select: none;
+        }
 
         body {
-            background-color: #0d0d0d;
-            background-image: radial-gradient(circle, #1a0011 0%, #050505 100%);
-            color: #e0e0e0;
-            font-family: 'Special Elite', monospace;
+            background: #2c3e50;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            margin: 0;
+            height: 100vh;
             overflow: hidden;
         }
 
-        .container {
-            background: rgba(15, 15, 15, 0.85);
-            border: 2px solid #660011;
-            box-shadow: 0 0 25px #440000, inset 0 0 15px #220000;
-            border-radius: 10px;
-            padding: 30px;
-            width: 400px;
-            text-align: center;
+        /* iPad Gehäuse */
+        #ipad {
+            width: 850px;
+            height: 600px;
+            background: #000;
+            border-radius: 36px;
+            padding: 25px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
             position: relative;
-            backdrop-filter: blur(5px);
+            border: 4px solid #555;
         }
 
-        h1 {
-            font-family: 'Cinzel', serif;
-            color: #990011;
-            text-shadow: 0 0 10px #ff0033, 0 0 20px #000;
-            margin-top: 0;
-            letter-spacing: 2px;
-        }
-
-        .subtitle {
-            font-size: 0.8rem;
-            color: #888;
-            margin-bottom: 25px;
-            text-transform: uppercase;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        label {
-            display: block;
-            color: #aa66cc;
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-        }
-
-        input {
+        /* Bildschirm */
+        #screen {
             width: 100%;
-            padding: 10px;
-            background: #151515;
-            border: 1px solid #444;
-            border-radius: 5px;
-            color: #fff;
-            font-family: 'Special Elite', monospace;
-            box-sizing: border-box;
-            transition: all 0.3s ease;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809') center/cover;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
-        input:focus {
-            outline: none;
-            border-color: #990011;
-            box-shadow: 0 0 10px #550000;
+        /* Statusleiste */
+        #status-bar {
+            height: 30px;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 10;
         }
 
-        button {
-            background: linear-gradient(45deg, #440000, #880011);
-            color: #fff;
-            border: none;
-            padding: 12px 25px;
-            font-family: 'Cinzel', serif;
-            font-size: 1.1rem;
+        /* Homescreen Grid */
+        #homescreen {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            grid-gap: 25px;
+            padding: 40px;
+            flex-grow: 1;
+            align-content: flex-start;
+        }
+
+        .app-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             cursor: pointer;
-            border-radius: 5px;
-            box-shadow: 0 0 10px #330000;
-            transition: all 0.3s ease;
+            transition: transform 0.2s;
+        }
+
+        .app-icon:active {
+            transform: scale(0.9);
+        }
+
+        .app-icon img {
+            width: 70px;
+            height: 70px;
+            border-radius: 16px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            margin-bottom: 8px;
+        }
+
+        .app-icon span {
+            color: white;
+            font-size: 12px;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+
+        /* Dock unten */
+        #dock {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            height: 90px;
+            margin: 0 auto 20px auto;
+            padding: 10px 30px;
+            border-radius: 30px;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        #dock .app-icon img {
+            width: 65px;
+            height: 65px;
+            margin-bottom: 0;
+        }
+
+        /* App Fenster (Overlays) */
+        .app-window {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            margin-top: 10px;
-        }
-
-        button:hover {
-            background: linear-gradient(45deg, #660011, #cc0022);
-            box-shadow: 0 0 15px #990011;
-            letter-spacing: 1px;
-        }
-
-        /* --- Animationen & Resultat --- */
-
-        .heart-icon {
-            font-size: 3rem;
-            color: #440000;
-            margin: 20px 0;
-            transition: all 0.5s ease;
-        }
-
-        .pulse {
-            animation: heartBeat 1.2s infinite;
-            color: #990011 !important;
-            text-shadow: 0 0 15px #ff0033;
-        }
-
-        @keyframes heartBeat {
-            0% { transform: scale(1); }
-            20% { transform: scale(1.15); }
-            40% { transform: scale(1); }
-            60% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        .loader {
+            height: 100%;
+            background: white;
+            z-index: 100;
             display: none;
-            margin: 20px auto;
-            width: 50px;
+            flex-direction: column;
+            animation: zoomIn 0.3s ease-out;
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .app-header {
             height: 50px;
-            border: 3px solid #333;
-            border-radius: 50%;
-            border-top-color: #990011;
-            animation: spin 1s linear infinite;
+            background: #f6f6f6;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            justify-content: space-between;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .btn-home {
+            background: #007aff;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
         }
 
-        #result-container {
-            display: none;
-            margin-top: 25px;
-            animation: fadeIn 1s ease forwards;
+        .app-content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* App Store Design */
+        #store-content {
+            background: #f0f0f6;
+        }
+        .store-item {
+            background: white;
+            padding: 15px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .store-item-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .store-item img {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+        }
+        .btn-get {
+            background: #007aff;
+            color: white;
+            border: none;
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn-get.installed {
+            background: #e5e5ea;
+            color: #8e8e93;
+            cursor: default;
         }
 
-        .percentage {
-            font-family: 'Cinzel', serif;
-            font-size: 3.5rem;
-            color: #ff0033;
-            text-shadow: 0 0 10px #660011;
-            margin: 10px 0;
-        }
-
-        .quote {
-            font-style: italic;
-            color: #bbb;
-            font-size: 1rem;
-            line-height: 1.4;
-            padding: 0 10px;
+        /* Game Canvas (Flappy Bird) */
+        canvas {
+            display: block;
+            margin: 0 auto;
+            background: #70c5ce;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Gothub Love Finder</h1>
-    <div class="subtitle">Berechne die seelische Finsternis eurer Liebe</div>
-    
-    <div class="input-group">
-        <label for="name1">Dein Name (oder Fledermaus 1):</label>
-        <input type="text" id="name1" placeholder="z.B. Morticia" autocomplete="off">
-    </div>
-    
-    <div class="input-group">
-        <label for="name2">Name des Opfers (oder Fledermaus 2):</label>
-        <input type="text" id="name2" placeholder="z.B. Gomez" autocomplete="off">
-    </div>
-    
-    <button onclick="calculateLove()">Ritual starten</button>
+<div id="ipad">
+    <div id="screen">
+        
+        <!-- Status Bar -->
+        <div id="status-bar">
+            <span id="current-time">09:41</span>
+            <div style="display:flex; gap: 8px;">
+                <span>📶</span>
+                <span>🔋 100%</span>
+            </div>
+        </div>
 
-    <div class="heart-icon" id="heart">🖤</div>
-    <div class="loader" id="loader"></div>
+        <!-- Homescreen Apps -->
+        <div id="homescreen" id="app-grid">
+            <!-- Vorinstallierte Apps -->
+            <div class="app-icon" onclick="openApp('safari')">
+                <img src="https://cdn-icons-png.flaticon.com/512/300/300214.png" alt="Safari">
+                <span>Safari</span>
+            </div>
+            <div class="app-icon" onclick="openApp('notes')">
+                <img src="https://cdn-icons-png.flaticon.com/512/889/889649.png" alt="Notizen">
+                <span>Notizen</span>
+            </div>
+            
+            <!-- Dynamisch installierte Apps landen hier -->
+            <div id="installed-apps" style="display: contents;"></div>
+        </div>
 
-    <div id="result-container">
-        <div class="percentage" id="percent">0%</div>
-        <div class="quote" id="goth-quote">"Spruch lädt..."</div>
+        <!-- Dock unten -->
+        <div id="dock">
+            <div class="app-icon" onclick="openApp('appstore')">
+                <img src="https://cdn-icons-png.flaticon.com/512/512/512395.png" alt="App Store">
+            </div>
+        </div>
+
     </div>
+
+    <!-- APP: SAFARI -->
+    <div id="app-safari" class="app-window">
+        <div class="app-header">
+            <h3>Safari Browser</h3>
+            <button class="btn-home" onclick="closeApp('safari')">Home</button>
+        </div>
+        <div class="app-content">
+            <iframe src="https://www.wikipedia.org" style="width:100%; height:100%; border:none;"></iframe>
+        </div>
+    </div>
+
+    <!-- APP: NOTIZEN -->
+    <div id="app-notes" class="app-window">
+        <div class="app-header">
+            <h3>Notizen</h3>
+            <button class="btn-home" onclick="closeApp('notes')">Home</button>
+        </div>
+        <div class="app-content">
+            <textarea placeholder="Schreibe hier etwas..." style="width:100%; height:90%; border:none; resize:none; font-size:18px; outline:none;"></textarea>
+        </div>
+    </div>
+
+    <!-- APP: APP STORE -->
+    <div id="app-appstore" class="app-window">
+        <div class="app-header">
+            <h2>App Store</h2>
+            <button class="btn-home" onclick="closeApp('appstore')">Home</button>
+        </div>
+        <div id="store-content" class="app-content">
+            <div class="store-item">
+                <div class="store-item-info">
+                    <img src="https://cdn-icons-png.flaticon.com/512/528/528073.png" alt="Flappy Game">
+                    <div>
+                        <h4>Flappy Bird Pro</h4>
+                        <p style="color:#666; font-size:12px;">Spiele den Klassiker</p>
+                    </div>
+                </div>
+                <button id="btn-install-game" class="btn-get" onclick="installApp('game', 'Flappy Bird Pro', 'https://cdn-icons-png.flaticon.com/512/528/528073.png')">LADEN</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- APP: GAME (Das installierbare Spiel) -->
+    <div id="app-game" class="app-window">
+        <div class="app-header">
+            <h3>Flappy Bird Pro</h3>
+            <button class="btn-home" onclick="closeApp('game'); stopGame();">Home</button>
+        </div>
+        <div class="app-content" style="background:#4ec0ca; display:flex; justify-content:center; align-items:center; flex-direction:column;">
+            <p style="color:white; margin-bottom:10px; font-weight:bold;">Klicke ins Spielfeld zum Springen!</p>
+            <canvas id="gameCanvas" width="400" height="400"></canvas>
+        </div>
+    </div>
+
 </div>
 
 <script>
-function calculateLove() {
-    const name1 = document.getElementById('name1').value.trim();
-    const name2 = document.getElementById('name2').value.trim();
-    
-    if (name1 === "" || name2 === "") {
-        alert("Bitte gib beide Namen ein, sonst verhungern die Krähen!");
-        return;
+    // Uhrzeit-Aktualisierung
+    function updateTime() {
+        const now = new Date();
+        let hours = now.getHours().toString().padStart(2, '0');
+        let minutes = now.getMinutes().toString().padStart(2, '0');
+        document.getElementById('current-time').innerText = `${hours}:${minutes}`;
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    // App-Fenster Steuerung
+    function openApp(appId) {
+        document.getElementById(`app-${appId}`).style.display = 'flex';
+        if(appId === 'game') {
+            startGame();
+        }
     }
 
-    // Reset & Start Animationen
-    document.getElementById('result-container').style.display = 'none';
-    document.getElementById('heart').classList.remove('pulse');
-    document.getElementById('heart').innerHTML = "🖤";
-    document.getElementById('loader').style.display = 'block';
+    function closeApp(appId) {
+        document.getElementById(`app-${appId}`).style.display = 'none';
+    }
 
-    // Fake-Berechnung (2 Sekunden "Ritual"-Dauer)
-    setTimeout(() => {
-        document.getElementById('loader').style.display = 'none';
+    // App Store Logik (App installieren)
+    function installApp(id, name, iconUrl) {
+        const btn = document.getElementById('btn-install-game');
+        if(btn.classList.contains('installed')) return;
+
+        btn.innerText = 'Wird geladen...';
+        btn.style.opacity = '0.7';
+
+        setTimeout(() => {
+            btn.innerText = 'GEÖFFNET';
+            btn.classList.add('installed');
+            btn.style.opacity = '1';
+
+            // Auf Homescreen hinzufügen
+            const installedAppsContainer = document.getElementById('installed-apps');
+            installedAppsContainer.innerHTML = `
+                <div class="app-icon" onclick="openApp('${id}')">
+                    <img src="${iconUrl}" alt="${name}">
+                    <span>${name}</span>
+                </div>
+            `;
+        }, 1500);
+    }
+
+    // --- GAME ENGINE (FLAPPY BIRD) ---
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    let animationFrameId;
+    let bird, pipes, score, gameOver;
+
+    function startGame() {
+        bird = { x: 50, y: 150, velocity: 0, gravity: 0.4, jump: -6, radius: 12 };
+        pipes = [];
+        score = 0;
+        gameOver = false;
+        canvas.removeEventListener('click', restartGameLoop);
+        canvas.addEventListener('click', () => bird.velocity = bird.jump);
+        gameLoop();
+    }
+
+    function stopGame() {
+        cancelAnimationFrame(animationFrameId);
+    }
+
+    function restartGameLoop() {
+        if(gameOver) startGame();
+    }
+
+    function gameLoop() {
+        if (gameOver) {
+            ctx.fillStyle = 'rgba(0,0,0,0.5)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'white';
+            ctx.font = '24px sans-serif';
+            ctx.fillText('Game Over', 140, 180);
+            ctx.font = '16px sans-serif';
+            ctx.fillText('Klicke zum Neustarten', 120, 220);
+            canvas.addEventListener('click', restartGameLoop);
+            return;
+        }
+
+        // Physik & Hintergrund
+        bird.velocity += bird.gravity;
+        bird.y += bird.velocity;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        // Generiere einen festen Wert basierend auf den Namen (damit bei gleichen Namen immer das gleiche rauskommt)
-        const combinedString = (name1 + name2).toLowerCase().sortString();
-        let hash = 0;
-        for (let i = 0; i < combinedString.length; i++) {
-            hash += combinedString.charCodeAt(i);
-        }
-        const percentage = hash % 101; // Wert zwischen 0 und 100
+        // Zeichne Vogel
+        ctx.fillStyle = '#f1c40f';
+        ctx.beginPath();
+        ctx.arc(bird.x, bird.y, bird.radius, 0, Math.PI * 2);
+        ctx.fill();
 
-        // Herz-Animation triggern
-        const heart = document.getElementById('heart');
-        heart.classList.add('pulse');
-        
-        if(percentage > 50) {
-            heart.innerHTML = "❤️"; // Rotes Herz bei viel Liebe
-        } else {
-            heart.innerHTML = "💔"; // Gebrochenes Herz bei wenig Liebe
+        // Röhren-Generierung
+        if (pipes.length === 0 || pipes[pipes.length - 1].x < canvas.width - 150) {
+            let gap = 110;
+            let topHeight = Math.floor(Math.random() * (canvas.height - gap - 60)) + 30;
+            pipes.push({ x: canvas.width, top: topHeight, bottom: canvas.height - topHeight - gap });
         }
 
-        // Spruch auswählen
-        let quote = "";
-        if (percentage <= 20) {
-            quote = `"Ein absoluter Albtraum. Eure Seelen meiden sich selbst im tiefsten Schatten. Geht euch lieber aus dem Weg."`;
-        } else if (percentage <= 40) {
-            quote = `"Kaum synchrone Herzschläge. Es reicht maximal für ein gemeinsames Schweigen auf dem Friedhof."`;
-        } else if (percentage <= 65) {
-            quote = `"Eine düstere Melancholie verbindet euch. Nicht perfekt, aber genug Verzweiflung für eine Weile."`;
-        } else if (percentage <= 85) {
-            quote = `"Eure Seelen tanzen im Rhythmus der Nacht. Eine starke, mystische Anziehungskraft liegt in der Luft."`;
-        } else {
-            quote = `"Bis dass der Tod euch scheidet? Lächerlich. Eure Liebe überdauert die Ewigkeit. Perfekte gothische Symbiose."`;
+        // Röhren bewegen und zeichnen
+        ctx.fillStyle = '#2ecc71';
+        for (let i = pipes.length - 1; i >= 0; i--) {
+            pipes[i].x -= 2;
+
+            // Obere Röhre
+            ctx.fillRect(pipes[i].x, 0, 40, pipes[i].top);
+            // Untere Röhre
+            ctx.fillRect(pipes[i].x, canvas.height - pipes[i].bottom, 40, pipes[i].bottom);
+
+            // Kollisionsprüfung
+            if (bird.x + bird.radius > pipes[i].x && bird.x - bird.radius < pipes[i].x + 40) {
+                if (bird.y - bird.radius < pipes[i].top || bird.y + bird.radius > canvas.height - pipes[i].bottom) {
+                    gameOver = true;
+                }
+            }
+
+            // Punkte zählen
+            if (pipes[i].x === bird.x) {
+                score++;
+            }
+
+            // Alte Röhren löschen
+            if (pipes[i].x < -40) pipes.splice(i, 1);
         }
 
-        // Ergebnisse anzeigen
-        document.getElementById('percent').innerText = percentage + "%";
-        document.getElementById('goth-quote').innerHTML = quote;
-        document.getElementById('result-container').style.display = 'block';
+        // Boden-Kollision
+        if (bird.y + bird.radius > canvas.height || bird.y - bird.radius < 0) {
+            gameOver = true;
+        }
 
-    }, 2000);
-}
+        // Score zeichnen
+        ctx.fillStyle = 'white';
+        ctx.font = '20px sans-serif';
+        ctx.fillText(`Score: ${score}`, 15, 30);
 
-// Hilfsfunktion, damit die Reihenfolge der Namen egal ist (A + B ergibt dasselbe wie B + A)
-String.prototype.sortString = function() {
-    return this.split('').sort().join('');
-};
+        animationFrameId = requestAnimationFrame(gameLoop);
+    }
 </script>
 
 </body>
