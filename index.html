@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>iPadOS Pro Ultimate - Gaming & Social Edition</title>
+    <title>iPadOS Pro - Developer & Multi-Chat Edition</title>
     <style>
         * {
             box-sizing: border-box;
@@ -62,7 +62,6 @@
             transition: background 0.3s ease;
         }
 
-        /* Status Bar */
         #status-bar {
             height: 38px;
             padding: 0 32px;
@@ -76,7 +75,7 @@
             text-shadow: 0 1px 4px rgba(0,0,0,0.4);
         }
 
-        /* LOCKSCREEN & REGISTRIERUNG */
+        /* LOCKSCREEN */
         #lockscreen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -115,7 +114,7 @@
         }
         .auth-toggle { font-size: 13px; margin-top: 12px; color: #a2a2a7; cursor: pointer; text-decoration: underline; }
 
-        /* Homescreen Grid */
+        /* Homescreen */
         #homescreen {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
@@ -136,8 +135,6 @@
             width: 90px;
             justify-self: center;
         }
-
-        /* Original App Store Design */
         .appstore-logo-css {
             width: 72px; height: 72px;
             background: linear-gradient(180deg, #34a4fe, #0072ff);
@@ -162,7 +159,6 @@
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
 
-        /* Wackel-Modus */
         @keyframes jiggle {
             0% { transform: rotate(-1.5deg); }
             50% { transform: rotate(1.5deg); }
@@ -186,7 +182,7 @@
         }
         #dock .app-icon img, #dock .appstore-logo-css { width: 64px; height: 64px; margin-bottom: 0; }
 
-        /* App Fenster */
+        /* Fenster */
         .app-window {
             position: absolute; top: 5%; left: 5%; width: 90%; height: 86%;
             background: var(--window-bg); color: var(--window-text); border-radius: 18px;
@@ -204,7 +200,7 @@
         .app-title { font-size: 16px; font-weight: 600; }
         .app-content { flex-grow: 1; overflow: auto; position: relative; display: flex; }
 
-        /* SETTINGS APP */
+        /* Einstellungen */
         .settings-sidebar { width: 32%; background: var(--sidebar-bg); border-right: 1px solid rgba(150,150,150,0.15); padding: 15px 10px; display: flex; flex-direction: column; gap: 6px; }
         .settings-menu-item { padding: 12px 14px; border-radius: 10px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 12px; color: var(--window-text); }
         .settings-menu-item.active { background: var(--tint-color); color: white; }
@@ -212,11 +208,10 @@
         .settings-panel.active { display: flex; }
         .settings-card { background: var(--card-bg); padding: 16px; border-radius: 12px; display: flex; flex-direction: column; gap: 10px; }
         .settings-row { display: flex; justify-content: space-between; align-items: center; }
-        .wallpaper-grid { display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 12px; margin-top: 10px; }
+        .wallpaper-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-gap: 12px; margin-top: 10px; }
         .wp-thumb { height: 85px; border-radius: 10px; cursor: pointer; border: 3px solid transparent; background-size: cover; background-position: center; }
         .wp-thumb.selected { border-color: var(--tint-color); }
 
-        /* Switches */
         .switch { position: relative; display: inline-block; width: 46px; height: 26px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #e5e5ea; transition: .2s; border-radius: 34px; }
@@ -224,7 +219,7 @@
         input:checked + .slider { background-color: #34c759; }
         input:checked + .slider:before { transform: translateX(20px); }
 
-        /* App Store Suche & Grid */
+        /* App Store */
         .store-search-bar { width: 100%; padding: 12px 20px; border: none; background: var(--card-bg); border-radius: 10px; margin-bottom: 15px; color: var(--window-text); outline: none; font-size: 15px; }
         .store-grid { display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 16px; padding: 20px; width: 100%; }
         .store-item { background: var(--card-bg); padding: 16px; border-radius: 16px; display: flex; align-items: center; justify-content: space-between; border: 1px solid rgba(150,150,150,0.1); }
@@ -236,24 +231,25 @@
         #home-bar { position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%); width: 210px; height: 5px; background: rgba(255,255,255,0.75); border-radius: 10px; z-index: 100000; cursor: pointer; }
         .dark-mode { --window-bg: #1c1c1e; --window-text: #ffffff; --sidebar-bg: #2c2c2e; --card-bg: rgba(255,255,255,0.06); }
 
-        /* Game & Chat Styles */
+        /* Games General */
         .game-container { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #111; color: white; }
         .game-canvas { background: #222; border: 2px solid #444; border-radius: 12px; }
         
-        /* WHATSAPP STYLE */
-        .wa-container { display: flex; width: 100%; height: 100%; background: #efeae2; }
-        .wa-sidebar { width: 30%; background: #ffffff; border-right: 1px solid #ddd; display: flex; flex-direction: column; }
-        .wa-chat-area { width: 70%; display: flex; flex-direction: column; height: 100%; }
-        .wa-chat-item { padding: 15px; border-bottom: 1px solid #f2f2f2; cursor: pointer; font-weight: 500; }
-        .wa-chat-item.active { background: #ebebeb; }
+        /* DYNAMIC WHATSAPP */
+        .wa-container { display: flex; width: 100%; height: 100%; background: #efeae2; color: #111; }
+        .wa-sidebar { width: 32%; background: #ffffff; border-right: 1px solid #ddd; display: flex; flex-direction: column; overflow-y: auto; }
+        .wa-chat-area { width: 68%; display: flex; flex-direction: column; height: 100%; position: relative; }
+        .wa-chat-header { padding: 12px; background: #f0f2f5; font-weight: bold; border-bottom: 1px solid #ddd; display: flex; align-items: center; gap: 10px; }
+        .wa-chat-item { padding: 14px; border-bottom: 1px solid #f9f9f9; cursor: pointer; font-weight: 500; transition: background 0.2s; }
+        .wa-chat-item:hover, .wa-chat-item.active { background: #f0f2f5; }
         .wa-msg-box { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .wa-bubble { padding: 10px 14px; border-radius: 10px; max-width: 70%; word-wrap: break-word; font-size: 15px; }
+        .wa-bubble { padding: 10px 14px; border-radius: 10px; max-width: 75%; word-wrap: break-word; font-size: 15px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
         .wa-bubble.me { background: #d9fdd3; align-self: flex-end; }
         .wa-bubble.them { background: #ffffff; align-self: flex-start; }
-        .wa-input-area { padding: 10px; background: #f0f2f5; display: flex; gap: 10px; align-items: center; }
-        .wa-input { flex-grow: 1; padding: 10px; border-radius: 8px; border: none; outline: none; }
+        .wa-input-area { padding: 12px; background: #f0f2f5; display: flex; gap: 10px; align-items: center; border-top: 1px solid #ddd; }
+        .wa-input { flex-grow: 1; padding: 11px; border-radius: 8px; border: 1px solid #ccc; outline: none; font-size: 14px; }
 
-        /* SOCIAL FRIENDS APP */
+        /* FRIENDS */
         .friends-list { width: 100%; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
         .friend-card { background: var(--card-bg); padding: 14px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; }
         .friend-status { font-size: 13px; color: #34c759; font-weight: 500; }
@@ -280,7 +276,7 @@
 
             <div class="auth-container" id="auth-login-box">
                 <h3>iPad Entsperren</h3>
-                <input type="text" id="login-user" class="auth-input" placeholder="Benutzername">
+                <input type="text" id="login-user" class="auth-input" placeholder="Benutzername (Tipp: Jonas)">
                 <input type="password" id="login-pass" class="auth-input" placeholder="Passcode (Zahlen)">
                 <button class="auth-btn" onclick="handleLogin()">Entsperren</button>
                 <div class="auth-toggle" onclick="toggleAuthBoxes(false)">Neuen Account registrieren</div>
@@ -295,22 +291,20 @@
             </div>
         </div>
 
-        <!-- Homescreen Grid -->
+        <!-- Homescreen -->
         <div id="homescreen"></div>
 
-        <!-- Schwebendes Dock -->
+        <!-- Dock -->
         <div id="dock-container">
             <div id="dock">
                 <div class="app-icon" onclick="openWin('settings')"><img src="https://cdn-icons-png.flaticon.com/512/3524/3524659.png"></div>
-                <div class="app-icon" onclick="openWin('appstore')">
-                    <div class="appstore-logo-css"><div class="stick-3"></div></div>
-                </div>
+                <div class="app-icon" onclick="openWin('appstore')"><div class="appstore-logo-css"><div class="stick-3"></div></div></div>
             </div>
         </div>
 
         <div id="home-bar" onclick="closeAll()"></div>
 
-        <!-- ---------------- SYSTEM WINDOWS ---------------- -->
+        <!-- ---------------- APPS / WINDOWS ---------------- -->
 
         <!-- SAFARI -->
         <div id="win-safari" class="app-window">
@@ -334,109 +328,128 @@
                     <div class="settings-menu-item active" onclick="switchSettingsPanel('general', this)">⚙️ Allgemein</div>
                     <div class="settings-menu-item" onclick="switchSettingsPanel('display', this)">☀️ Anzeige & Helligkeit</div>
                     <div class="settings-menu-item" onclick="switchSettingsPanel('wallpaper', this)">🖼️ Hintergrundbild</div>
+                    <!-- Jonas Spezial Bereich -->
+                    <div class="settings-menu-item" id="jonas-menu-item" style="display:none; color:#34c759; font-weight:bold;" onclick="switchSettingsPanel('developer', this)">🛠️ Dev Settings</div>
                 </div>
+                
                 <div id="set-panel-general" class="settings-panel active">
                     <h2>Allgemein</h2>
                     <div class="settings-card">
                         <div class="settings-row"><span>iPad-Name</span><span id="set-info-user" style="color:#8e8e93">Gast</span></div>
-                        <div class="settings-row"><span>Softwareversion</span><span style="color:#8e8e93">iPadOS 19.6 Premium</span></div>
+                        <div class="settings-row"><span>Softwareversion</span><span style="color:#8e8e93">iPadOS 19.8 Active-Kill</span></div>
                     </div>
                     <button class="auth-btn" style="background:#ff3b30;" onclick="logout()">Abmelden & Sperren</button>
                 </div>
+                
                 <div id="set-panel-display" class="settings-panel">
                     <h2>Anzeige & Helligkeit</h2>
                     <div class="settings-card"><div class="settings-row"><span>Dark Mode</span><label class="switch"><input type="checkbox" id="darkmode-toggle" onchange="toggleDarkMode()"><span class="slider"></span></label></div></div>
                 </div>
+                
                 <div id="set-panel-wallpaper" class="settings-panel">
                     <h2>Hintergrundbild wählen</h2>
-                    <div class="wallpaper-grid">
-                        <div class="wp-thumb" id="wp1" style="background-image:url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=300')" onclick="changeWallpaper('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200', 'wp1')"></div>
-                        <div class="wp-thumb" id="wp2" style="background-image:url('https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?q=80&w=300')" onclick="changeWallpaper('https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?q=80&w=1200', 'wp2')"></div>
+                    <div class="wallpaper-grid" id="wallpaper-selection-grid">
+                        <div class="wp-thumb" style="background-image:url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=300')" onclick="changeWallpaper('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200')"></div>
+                        <div class="wp-thumb" style="background-image:url('https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?q=80&w=300')" onclick="changeWallpaper('https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?q=80&w=1200')"></div>
+                    </div>
+                </div>
+
+                <!-- Geheimes Entwickler-Panel -->
+                <div id="set-panel-developer" class="settings-panel">
+                    <h2 style="color:#34c759;">Jonas Developer Console</h2>
+                    <div class="settings-card">
+                        <p>Willkommen, System-Entwickler Jonas. Hier hast du Root-Zugriff auf das iPad-System.</p>
+                        <button class="auth-btn" style="background:#000; border:1px solid #34c759; color:#34c759;" onclick="alert('System-RAM bereinigt. 0B Hintergrund-Tasks aktiv.')">Forced RAM Wipe</button>
+                        <button class="auth-btn" style="background:#ff9500;" onclick="localStorage.clear(); location.reload();">System komplett zurücksetzen</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- APP STORE (MIT SUCHE) -->
+        <!-- APP STORE -->
         <div id="win-appstore" class="app-window">
             <div class="app-header"><button class="win-close" onclick="closeWin('appstore')"></button><div class="app-title">App Store</div><div style="width:13px;"></div></div>
             <div class="app-content" style="flex-direction:column; padding: 20px;">
-                <input type="text" id="store-search" class="store-search-bar" placeholder="🔍 Apps & Spiele suchen..." oninput="searchApps()">
-                <div class="store-grid" id="store-apps-list">
-                    <!-- Wird dynamisch generiert -->
-                </div>
+                <input type="text" id="store-search" class="store-search-bar" placeholder="🔍 Apps & Spiele durchsuchen..." oninput="searchApps()">
+                <div class="store-grid" id="store-apps-list"></div>
             </div>
         </div>
 
-        <!-- WHATSAPP APP -->
+        <!-- INTERAKTIVES MULTI-CHAT WHATSAPP -->
         <div id="win-whatsapp" class="app-window">
-            <div class="app-header"><button class="win-close" onclick="closeWin('whatsapp')"></button><div class="app-title">WhatsApp</div><div style="width:13px;"></div></div>
+            <div class="app-header"><button class="win-close" onclick="closeWin('whatsapp')"></button><div class="app-title">WhatsApp Business</div><div style="width:13px;"></div></div>
             <div class="app-content">
                 <div class="wa-container">
                     <div class="wa-sidebar">
-                        <div class="wa-chat-item active">Leon (Beste Freunde)</div>
-                        <div class="wa-chat-item">Clan-Gruppe 🔥</div>
+                        <div style="padding: 10px; border-bottom: 1px solid #ddd; background: #f0f2f5;">
+                            <input type="text" id="wa-new-chat-name" class="store-search-bar" placeholder="➕ Neuer Chat-Name..." style="margin-bottom:0; padding:8px;" onkeypress="if(e.key==='Enter')createNewChat()">
+                            <button class="auth-btn" style="margin-top:5px; padding:6px; font-size:12px;" onclick="createNewChat()">Chat öffnen</button>
+                        </div>
+                        <div id="wa-chats-list">
+                            <!-- Chats landen hier -->
+                        </div>
                     </div>
                     <div class="wa-chat-area">
-                        <div class="wa-msg-box" id="wa-chat-history">
-                            <div class="wa-bubble them">Hey! Zocken wir nachher eine Runde Roblox oder Brawl Stars?</div>
-                        </div>
+                        <div class="wa-chat-header">🗣️ <span id="wa-current-target-title">Wähle einen Chat</span></div>
+                        <div class="wa-msg-box" id="wa-chat-history"></div>
                         <div class="wa-input-area">
-                            <input type="text" id="wa-input-field" class="wa-input" placeholder="Nachricht schreiben...">
-                            <button class="btn-get" style="background: #007aff; color: white;" onclick="sendWhatsAppMsg()">Senden</button>
+                            <input type="text" id="wa-input-field" class="wa-input" placeholder="Nachricht eintippen...">
+                            <button class="btn-get" style="background: #34c759; color: white;" onclick="sendWhatsAppMsg()">Senden</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- FREUNDE ADDEN APP -->
+        <!-- FRIENDS APP -->
         <div id="win-friends" class="app-window">
-            <div class="app-header"><button class="win-close" onclick="closeWin('friends')"></button><div class="app-title">Friends Hub</div><div style="width:13px;"></div></div>
+            <div class="app-header"><button class="win-close" onclick="closeWin('friends')"></button><div class="app-title">Friends Network</div><div style="width:13px;"></div></div>
             <div class="app-content" style="flex-direction: column; padding: 20px;">
-                <h3>Freund hinzufügen</h3>
+                <h3>Freund adden</h3>
                 <div style="display:flex; gap:10px; margin: 15px 0;">
-                    <input type="text" id="friend-input-name" class="store-search-bar" placeholder="Benutzername eingeben..." style="margin-bottom:0;">
-                    <button class="auth-btn" style="width:120px; margin-top:0;" onclick="addFriend()">Hinzufügen</button>
+                    <input type="text" id="friend-input-name" class="store-search-bar" placeholder="User-ID eingeben..." style="margin-bottom:0;">
+                    <button class="auth-btn" style="width:120px; margin-top:0;" onclick="addFriend()">Adden</button>
                 </div>
-                <h3>Deine Freunde & Live-Aktivität</h3>
+                <h3>Live Status-Aktivitäten</h3>
                 <div class="friends-list" id="friends-list-container"></div>
             </div>
         </div>
 
-        <!-- OLD GAMES: FLAPPY, CLICKER, PONG -->
+        <!-- YOUTUBE APP (NEU) -->
+        <div id="win-youtube" class="app-window">
+            <div class="app-header"><button class="win-close" onclick="closeWin('youtube')"></button><div class="app-title">YouTube</div><div style="width:13px;"></div></div>
+            <div class="app-content" style="padding:20px; flex-direction:column; gap:15px; background:#0f0f0f; color:white;">
+                <h2>Empfohlen</h2>
+                <div style="background:#222; padding:15px; border-radius:12px; display:flex; gap:15px; align-items:center;">
+                    <div style="width:120px; height:70px; background:red; border-radius:8px; display:flex; justify-content:center; align-items:center; font-weight:bold;">LIVE</div>
+                    <div><h4>Brawl Stars Weltmeisterschaft 2026 Finals</h4><p style="color:#aaa; font-size:13px;">140.000 Zuschauer</p></div>
+                </div>
+                <div style="background:#222; padding:15px; border-radius:12px; display:flex; gap:15px; align-items:center;">
+                    <div style="width:120px; height:70px; background:#333; border-radius:8px; display:flex; justify-content:center; align-items:center; font-weight:bold;">▶️</div>
+                    <div><h4>Roblox: So schaffst du das unschaffbare Obby!</h4><p style="color:#aaa; font-size:13px;">Vor 2 Stunden hochgeladen</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- WETTER APP (NEU) -->
+        <div id="win-weather" class="app-window">
+            <div class="app-header"><button class="win-close" onclick="closeWin('weather')"></button><div class="app-title">Wetter</div><div style="width:13px;"></div></div>
+            <div class="app-content" style="padding:30px; flex-direction:column; align-items:center; background:linear-gradient(to bottom, #4a90e2, #50e3c2); color:white;">
+                <h1 style="font-size:32px; font-weight:400; margin-bottom:5px;">Dortmund</h1>
+                <span style="font-size:72px; font-weight:100;">22°</span>
+                <p style="font-size:18px; font-weight:500;">Heiter bis Sonnig ☀️</p>
+                <div style="margin-top:30px; background:rgba(255,255,255,0.2); padding:15px; border-radius:12px; width:100%; max-width:300px; display:flex; justify-content:space-between;">
+                    <span>Wind: 12 km/h</span><span>Feuchtigkeit: 45%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SPIELE ENGINE CANVAS SYSTEME -->
+        <div id="win-brawlstars" class="app-window"><div class="app-header"><button class="win-close" onclick="closeWin('brawlstars')"></button><div class="app-title">Brawl Stars Mini</div><div style="width:13px;"></div></div><div class="app-content"><div class="game-container"><h3 id="bs-score-tag">Juwelen gesammelt: 0</h3><canvas id="brawlCanvas" width="500" height="320" class="game-canvas"></canvas></div></div></div>
+        <div id="win-roblox" class="app-window"><div class="app-header"><button class="win-close" onclick="closeWin('roblox')"></button><div class="app-title">Roblox Sandbox</div><div style="width:13px;"></div></div><div class="app-content" style="background:#222; color:#fff; flex-direction:column; align-items:center; justify-content:center; width:100%;"><div id="roblox-lobby" style="text-align:center;"><h2>Willkommen bei ROBLOX</h2><p style="margin:10px 0;">Wähle die Farbe deines Avatars:</p><input type="color" id="rb-color" value="#007aff" style="padding:5px; border-radius:5px;"><br><br><button class="auth-btn" style="width:180px;" onclick="startRobloxObby()">Obby starten 🎮</button></div><div id="roblox-gameplay" style="display:none; text-align:center;"><canvas id="robloxCanvas" width="500" height="250" class="game-canvas"></canvas><p>Klicke/Tappe in die App zum Springen!</p></div></div></div>
         <div id="win-gameflappy" class="app-window"><div class="app-header"><button class="win-close" onclick="closeWin('gameflappy')"></button><div class="app-title">Flappy Block</div><div style="width:13px;"></div></div><div class="app-content"><div class="game-container"><canvas id="flappyCanvas" width="400" height="350" class="game-canvas"></canvas><button class="auth-btn" style="width:120px; padding:6px; margin-top:10px;" onclick="initFlappy()">Start</button></div></div></div>
         <div id="win-gameclicker" class="app-window"><div class="app-header"><button class="win-close" onclick="closeWin('gameclicker')"></button><div class="app-title">Clicker Tycoon</div><div style="width:13px;"></div></div><div class="app-content" style="padding:30px; flex-direction:column; align-items:center; justify-content:center; gap:20px;"><h1 id="clicker-score" style="font-size:48px;">0 💎</h1><div style="width:120px; height:120px; background:orange; border-radius:50%; display:flex; justify-content:center; align-items:center; font-size:40px; cursor:pointer;" onclick="doClick()">💎</div></div></div>
         <div id="win-gamepong" class="app-window"><div class="app-header"><button class="win-close" onclick="closeWin('gamepong')"></button><div class="app-title">Ping Pong</div><div style="width:13px;"></div></div><div class="app-content"><div class="game-container"><canvas id="pongCanvas" width="450" height="300" class="game-canvas"></canvas></div></div></div>
-
-        <!-- NEW GAME: BRAWL STARS SANDBOX -->
-        <div id="win-brawlstars" class="app-window">
-            <div class="app-header"><button class="win-close" onclick="closeWin('brawlstars')"></button><div class="app-title">Brawl Stars Mini</div><div style="width:13px;"></div></div>
-            <div class="app-content">
-                <div class="game-container">
-                    <h3 id="bs-score-tag">Juwelen gesammelt: 0</h3>
-                    <canvas id="brawlCanvas" width="500" height="320" class="game-canvas"></canvas>
-                    <p style="font-size:12px; color:#aaa; margin-top:8px;">Klicke in den Kasten, um deinen Brawler zum Ziel zu steuern!</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- NEW GAME: ROBLOX OBBY & CUSTOMIZER -->
-        <div id="win-roblox" class="app-window">
-            <div class="app-header"><button class="win-close" onclick="closeWin('roblox')"></button><div class="app-title">Roblox Sandbox</div><div style="width:13px;"></div></div>
-            <div class="app-content" style="background:#222; color:#fff; flex-direction:column; align-items:center; justify-content:center; width:100%;">
-                <div id="roblox-lobby" style="text-align:center;">
-                    <h2>Willkommen bei ROBLOX</h2>
-                    <p style="margin:10px 0;">Wähle die Farbe deines Avatars:</p>
-                    <input type="color" id="rb-color" value="#ff0000" style="padding:5px; border-radius:5px;"><br><br>
-                    <button class="auth-btn" style="width:180px;" onclick="startRobloxObby()">Obby starten 🎮</button>
-                </div>
-                <div id="roblox-gameplay" style="display:none; text-align:center;">
-                    <canvas id="robloxCanvas" width="500" height="250" class="game-canvas"></canvas>
-                    <p>Klicke/Tappe zum Springen über die roten Blöcke!</p>
-                </div>
-            </div>
-        </div>
 
     </div>
 </div>
@@ -447,8 +460,16 @@
     let activeApps = ['safari', 'notes', 'settings']; 
     let longPressTimer;
     let friendsListData = [];
+    
+    // Datenstrukturen für dynamisches WhatsApp
+    let chatStorage = {}; 
+    let activeChatTarget = "";
 
-    // Uhrzeit & Datum
+    // Spiele-Loop IDs für sauberes Beenden im Hintergrund
+    let brawlLoopId = null;
+    let robloxInterval = null;
+    let pongInterval = null;
+
     function updateClock() {
         const d = new Date();
         const timeStr = d.toLocaleTimeString('de-DE', {hour: '2-digit', minute:'2-digit'});
@@ -458,7 +479,6 @@
     }
     setInterval(updateClock, 1000); updateClock();
 
-    // Multi-User Logik
     function toggleAuthBoxes(showLogin) {
         document.getElementById('auth-login-box').style.display = showLogin ? 'block' : 'none';
         document.getElementById('auth-register-box').style.display = showLogin ? 'none' : 'block';
@@ -467,19 +487,20 @@
     function handleRegister() {
         const u = document.getElementById('reg-user').value.trim();
         const p = document.getElementById('reg-pass').value.trim();
-        if(!u || !p) return alert('Bitte Felder ausfüllen!');
+        if(!u || !p) return alert('Bitte ausfüllen!');
         if(userDatabase[u]) return alert('User existiert bereits!');
         
-        userDatabase[u] = { passcode: p, wallpaper: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200', apps: ['safari', 'notes', 'settings'], notesData: '', darkMode: false, friends: [], chats: [] };
+        userDatabase[u] = { passcode: p, wallpaper: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200', apps: ['safari', 'notes', 'settings', 'whatsapp', 'friends'], notesData: '', darkMode: false, friends: [], chatHistory: {} };
         localStorage.setItem('ipad_users', JSON.stringify(userDatabase));
-        alert('Erfolgreich! Bitte einloggen.'); toggleAuthBoxes(true);
+        alert('Erfolgreich registriert! Bitte logge dich ein.'); toggleAuthBoxes(true);
     }
 
     function handleLogin() {
         const u = document.getElementById('login-user').value.trim();
         const p = document.getElementById('login-pass').value.trim();
         if(userDatabase[u] && userDatabase[u].passcode === p) { currentUser = u; loadUserAccount(); }
-        else { alert('Falscher Code!'); }
+        else if (u.toLowerCase() === 'jonas') { currentUser = 'Jonas'; userDatabase['Jonas'] = { passcode: p, wallpaper: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200', apps: ['safari', 'notes', 'settings', 'whatsapp', 'friends', 'youtube', 'weather'], notesData: '', darkMode: true, friends: [], chatHistory: {} }; loadUserAccount(); }
+        else { alert('Zugangsdaten inkorrekt!'); }
     }
 
     function loadUserAccount() {
@@ -490,17 +511,28 @@
         document.getElementById('screen').style.backgroundImage = `url('${data.wallpaper}')`;
         activeApps = data.apps || ['safari', 'notes', 'settings'];
         friendsListData = data.friends || [];
-        
-        // Chats laden falls vorhanden
-        if(data.chats && data.chats.length > 0) {
-            const history = document.getElementById('wa-chat-history');
-            data.chats.forEach(m => {
-                const b = document.createElement('div'); b.className = "wa-bubble me"; b.innerText = m; history.appendChild(b);
-            });
+        chatStorage = data.chatHistory || {};
+
+        // Jonas Prüfung für Entwickler-Features
+        const devItem = document.getElementById('jonas-menu-item');
+        const wpGrid = document.getElementById('wallpaper-selection-grid');
+        if(currentUser.toLowerCase() === 'jonas') {
+            devItem.style.display = 'flex';
+            // Exklusive Jonas Wallpapers anhängen falls noch nicht da
+            if(!document.getElementById('jonas-wp-1')) {
+                wpGrid.insertAdjacentHTML('beforeend', `
+                    <div class="wp-thumb" id="jonas-wp-1" style="background-image:url('https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=300')" onclick="changeWallpaper('https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1200')"></div>
+                    <div class="wp-thumb" id="jonas-wp-2" style="background-image:url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=300')" onclick="changeWallpaper('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200')"></div>
+                `);
+            }
+        } else {
+            devItem.style.display = 'none';
         }
 
         buildHomescreen();
         renderFriends();
+        initWhatsAppSystem();
+        
         document.getElementById('lockscreen').style.transform = 'translateY(-100%)';
         document.getElementById('lockscreen').style.opacity = '0';
     }
@@ -510,24 +542,26 @@
         userDatabase[currentUser].apps = activeApps;
         userDatabase[currentUser].notesData = document.getElementById('notes-textarea').value;
         userDatabase[currentUser].friends = friendsListData;
+        userDatabase[currentUser].chatHistory = chatStorage;
         localStorage.setItem('ipad_users', JSON.stringify(userDatabase));
     }
 
     function logout() { saveUserData(); currentUser = null; closeAll(); document.getElementById('lockscreen').style.transform = 'translateY(0)'; document.getElementById('lockscreen').style.opacity = '1'; }
     function saveNotes() { if(currentUser) saveUserData(); }
 
-    // App Katalog Metadaten
     const appCatalog = {
-        safari: { name: 'Safari', img: 'https://cdn-icons-png.flaticon.com/512/300/300214.png', cat: 'apps' },
-        notes: { name: 'Notizen', img: 'https://cdn-icons-png.flaticon.com/512/889/889649.png', cat: 'apps' },
-        settings: { name: 'Einstellungen', img: 'https://cdn-icons-png.flaticon.com/512/3524/3524659.png', cat: 'apps' },
-        whatsapp: { name: 'WhatsApp', img: 'https://cdn-icons-png.flaticon.com/512/3670/3670051.png', cat: 'apps' },
-        friends: { name: 'Friends', img: 'https://cdn-icons-png.flaticon.com/512/1216/1216895.png', cat: 'apps' },
-        gameflappy: { name: 'Flappy Block', img: 'https://cdn-icons-png.flaticon.com/512/528/528105.png', cat: 'games' },
-        gameclicker: { name: 'Clicker Pro', img: 'https://cdn-icons-png.flaticon.com/512/1043/1043444.png', cat: 'games' },
-        gamepong: { name: 'Ping Pong', img: 'https://cdn-icons-png.flaticon.com/512/3068/3068321.png', cat: 'games' },
-        brawlstars: { name: 'Brawl Stars', img: 'https://play-lh.googleusercontent.com/978wA_9b7Y5A7D2S37S8n37fO7yM3V8_60gYm9b9F27v5S80F9vS1S98oF9vS1S98oF=w240-h240', cat: 'games' },
-        roblox: { name: 'Roblox', img: 'https://play-lh.googleusercontent.com/WNWZaxi9vJgA0Z8wA7b9S8n37fO7yM3V8_60gYm9b9F27v5S80F9vS1S98oF9vS1S98oF=w240-h240', cat: 'games' }
+        safari: { name: 'Safari', img: 'https://cdn-icons-png.flaticon.com/512/300/300214.png', cat: 'App' },
+        notes: { name: 'Notizen', img: 'https://cdn-icons-png.flaticon.com/512/889/889649.png', cat: 'App' },
+        settings: { name: 'Einstellungen', img: 'https://cdn-icons-png.flaticon.com/512/3524/3524659.png', cat: 'App' },
+        whatsapp: { name: 'WhatsApp', img: 'https://cdn-icons-png.flaticon.com/512/3670/3670051.png', cat: 'App' },
+        friends: { name: 'Friends', img: 'https://cdn-icons-png.flaticon.com/512/1216/1216895.png', cat: 'App' },
+        youtube: { name: 'YouTube', img: 'https://cdn-icons-png.flaticon.com/512/1384/1384060.png', cat: 'App' },
+        weather: { name: 'Wetter', img: 'https://cdn-icons-png.flaticon.com/512/4804/4804187.png', cat: 'App' },
+        gameflappy: { name: 'Flappy Block', img: 'https://cdn-icons-png.flaticon.com/512/528/528105.png', cat: 'Spiel' },
+        gameclicker: { name: 'Clicker Pro', img: 'https://cdn-icons-png.flaticon.com/512/1043/1043444.png', cat: 'Spiel' },
+        gamepong: { name: 'Ping Pong', img: 'https://cdn-icons-png.flaticon.com/512/3068/3068321.png', cat: 'Spiel' },
+        brawlstars: { name: 'Brawl Stars', img: 'https://play-lh.googleusercontent.com/978wA_9b7Y5A7D2S37S8n37fO7yM3V8_60gYm9b9F27v5S80F9vS1S98oF9vS1S98oF=w240-h240', cat: 'Spiel' },
+        roblox: { name: 'Roblox', img: 'https://play-lh.googleusercontent.com/WNWZaxi9vJgA0Z8wA7b9S8n37fO7yM3V8_60gYm9b9F27v5S80F9vS1S98oF9vS1S98oF=w240-h240', cat: 'Spiel' }
     };
 
     function buildHomescreen() {
@@ -539,14 +573,12 @@
             div.innerHTML = `<div class="delete-badge">−</div><img src="${item.img}"><span>${item.name}</span>`;
             attachAppListeners(div); grid.appendChild(div);
         });
-        searchApps(); // App Store aktualisieren
+        searchApps();
     }
 
-    // App Store Suchfunktion & Filterung
     function searchApps() {
         const query = document.getElementById('store-search').value.toLowerCase();
         const container = document.getElementById('store-apps-list'); container.innerHTML = '';
-
         Object.keys(appCatalog).forEach(id => {
             const app = appCatalog[id];
             if(app.name.toLowerCase().includes(query)) {
@@ -566,25 +598,49 @@
         activeApps.push(id); saveUserData(); buildHomescreen();
     }
 
-    // Window Steuerung
     let topZ = 100;
     function openWin(id) {
         if(document.body.classList.contains('wiggle-active')) return;
         const w = document.getElementById(`win-${id}`); if(!w) return;
         w.style.display = 'flex'; topZ++; w.style.zIndex = topZ;
         setTimeout(() => w.classList.add('active'), 10);
+        
+        // Engine Starts
         if(id === 'brawlstars') initBrawlStars();
         if(id === 'gamepong') initPong();
     }
-    function closeWin(id) { const w = document.getElementById(`win-${id}`); if(w){ w.classList.remove('active'); setTimeout(() => w.style.display = 'none', 200); } }
-    function closeAll() { document.querySelectorAll('.app-window').forEach(w => { w.classList.remove('active'); setTimeout(() => w.style.display='none', 200); }); endWiggleMode(); }
 
-    // Settings Helfer
+    function closeWin(id) { 
+        const w = document.getElementById(`win-${id}`); 
+        if(w){ 
+            w.classList.remove('active'); 
+            setTimeout(() => w.style.display = 'none', 200); 
+            
+            // AKTIVE HINTERGRUND-TASKS KILLEN:
+            if(id === 'brawlstars') { cancelAnimationFrame(brawlLoopId); brawlLoopId = null; }
+            if(id === 'roblox') { clearInterval(robloxInterval); robloxInterval = null; }
+            if(id === 'gamepong') { clearInterval(pongInterval); pongInterval = null; }
+        } 
+    }
+
+    function closeAll() { 
+        document.querySelectorAll('.app-window').forEach(w => {
+            const id = w.id.replace('win-', '');
+            w.classList.remove('active'); 
+            setTimeout(() => w.style.display='none', 200); 
+        }); 
+        
+        // Alle aktiven Loops restlos stoppen
+        cancelAnimationFrame(brawlLoopId); brawlLoopId = null;
+        clearInterval(robloxInterval); robloxInterval = null;
+        clearInterval(pongInterval); pongInterval = null;
+        endWiggleMode(); 
+    }
+
     function switchSettingsPanel(pId, el) { document.querySelectorAll('.settings-menu-item').forEach(e => e.classList.remove('active')); document.querySelectorAll('.settings-panel').forEach(e => e.classList.remove('active')); el.classList.add('active'); document.getElementById(`set-panel-${pId}`).classList.add('active'); }
     function toggleDarkMode() { const active = document.getElementById('darkmode-toggle').checked; document.querySelectorAll('.app-window').forEach(w => active ? w.classList.add('dark-mode') : w.classList.remove('dark-mode')); }
-    function changeWallpaper(url, id) { document.getElementById('screen').style.backgroundImage = `url('${url}')`; if(currentUser){ userDatabase[currentUser].wallpaper = url; localStorage.setItem('ipad_users', JSON.stringify(userDatabase)); } }
+    function changeWallpaper(url) { document.getElementById('screen').style.backgroundImage = `url('${url}')`; if(currentUser){ userDatabase[currentUser].wallpaper = url; localStorage.setItem('ipad_users', JSON.stringify(userDatabase)); } }
 
-    // Wackelmodus & Dragging Logik
     function startWiggleMode() { document.body.classList.add('wiggle-active'); document.querySelectorAll('#homescreen .app-icon').forEach(app => app.classList.add('wiggling')); }
     function endWiggleMode() { document.body.classList.remove('wiggle-active'); document.querySelectorAll('#homescreen .app-icon').forEach(app => app.classList.remove('wiggling')); }
     
@@ -599,11 +655,8 @@
         });
         ['touchstart', 'mousedown'].forEach(evt => app.addEventListener(evt, () => longPressTimer = setTimeout(startWiggleMode, 800)));
         ['touchend', 'mouseup', 'mouseleave'].forEach(evt => app.addEventListener(evt, () => clearTimeout(longPressTimer)));
-        app.addEventListener('dragstart', (e) => { if(!document.body.classList.contains('wiggle-active')) { e.preventDefault(); return; } app.classList.add('dragging'); });
-        app.addEventListener('dragend', () => app.classList.remove('dragging'));
     }
 
-    // Grid Drag & Drop
     const grid = document.getElementById('homescreen');
     grid.addEventListener('dragover', (e) => {
         e.preventDefault(); const dragItem = document.querySelector('.dragging'); if(!dragItem) return;
@@ -613,24 +666,73 @@
         activeApps = [...grid.querySelectorAll('.app-icon')].map(el => el.dataset.appid); saveUserData();
     });
 
-    // --- SOCIAL CHATS & FRIENDS FEATURES ---
-    function sendWhatsAppMsg() {
-        const inp = document.getElementById('wa-input-field'); if(!inp.value.trim()) return;
-        const history = document.getElementById('wa-chat-history');
-        const b = document.createElement('div'); b.className = "wa-bubble me"; b.innerText = inp.value;
-        history.appendChild(b);
+    // --- WHATSAPP MEHR-ACCOUNT FUNKTION ---
+    function initWhatsAppSystem() {
+        if(!chatStorage["Leon"]) chatStorage["Leon"] = ["Hey! Zocken wir nachher eine Runde Roblox?"];
+        if(!chatStorage["Clan-Gruppe"]) chatStorage["Clan-Gruppe"] = ["Morgen cw an alle!", "Wer ist am Start?"];
         
-        if(currentUser) {
-            if(!userDatabase[currentUser].chats) userDatabase[currentUser].chats = [];
-            userDatabase[currentUser].chats.push(inp.value); saveUserData();
-        }
-        inp.value = ''; history.scrollTop = history.scrollHeight;
+        activeChatTarget = "Leon";
+        renderChatSidebar();
+        loadActiveChat();
     }
 
-    function addFriend() {
-        const name = document.getElementById('friend-input-name').value.trim();
+    function renderChatSidebar() {
+        const side = document.getElementById('wa-chats-list'); side.innerHTML = '';
+        Object.keys(chatStorage).forEach(name => {
+            const div = document.createElement('div');
+            div.className = `wa-chat-item ${name === activeChatTarget ? 'active' : ''}`;
+            div.innerText = `👤 ${name}`;
+            div.onclick = () => { activeChatTarget = name; renderChatSidebar(); loadActiveChat(); };
+            side.appendChild(div);
+        });
+    }
+
+    function loadActiveChat() {
+        document.getElementById('wa-current-target-title').innerText = activeChatTarget;
+        const history = document.getElementById('wa-chat-history'); history.innerHTML = '';
+        
+        if(chatStorage[activeChatTarget]) {
+            chatStorage[activeChatTarget].forEach(msg => {
+                const b = document.createElement('div');
+                // Simulierter Aufbau: Nachrichten die mit [Them] starten sind Gegenüber
+                if(msg.startsWith("[Them] ")) {
+                    b.className = "wa-bubble them"; b.innerText = msg.replace("[Them] ", "");
+                } else {
+                    b.className = "wa-bubble me"; b.innerText = msg;
+                }
+                history.appendChild(b);
+            });
+        }
+        history.scrollTop = history.scrollHeight;
+    }
+
+    function createNewChat() {
+        const input = document.getElementById('wa-new-chat-name');
+        const name = input.value.trim();
         if(!name) return;
-        const activities = ['Online', 'Spielt Brawl Stars 💥', 'Spielt Roblox 🧱', 'Schreibt...', 'Abwesend'];
+        if(!chatStorage[name]) {
+            chatStorage[name] = ["🎨 Neuer Chat begonnen"];
+        }
+        activeChatTarget = name;
+        input.value = '';
+        renderChatSidebar();
+        loadActiveChat();
+        saveUserData();
+    }
+
+    function sendWhatsAppMsg() {
+        const inp = document.getElementById('wa-input-field'); if(!inp.value.trim() || !activeChatTarget) return;
+        
+        chatStorage[activeChatTarget].push(inp.value);
+        loadActiveChat();
+        saveUserData();
+        inp.value = '';
+    }
+
+    // --- FRIENDS ---
+    function addFriend() {
+        const name = document.getElementById('friend-input-name').value.trim(); if(!name) return;
+        const activities = ['Online', 'Spielt Brawl Stars 💥', 'Spielt Roblox 🧱', 'Abwesend'];
         friendsListData.push({ name: name, status: activities[Math.floor(Math.random() * activities.length)] });
         document.getElementById('friend-input-name').value = '';
         saveUserData(); renderFriends();
@@ -638,34 +740,19 @@
 
     function renderFriends() {
         const c = document.getElementById('friends-list-container'); c.innerHTML = '';
-        if(friendsListData.length === 0) { c.innerHTML = '<p style="color:#8e8e93">Noch keine Freunde hinzugefügt.</p>'; return; }
+        if(friendsListData.length === 0) { c.innerHTML = '<p style="color:#8e8e93">Keine Freunde hinzugefügt.</p>'; return; }
         friendsListData.forEach(f => {
             c.insertAdjacentHTML('beforeend', `<div class="friend-card"><strong>👦 ${f.name}</strong><span class="friend-status">${f.status}</span></div>`);
         });
     }
 
-    // Simuliere Live-Status Updates der Freunde alle 7 Sekunden
-    setInterval(() => {
-        if(friendsListData.length > 0) {
-            const activities = ['Online', 'Spielt Brawl Stars 💥', 'Spielt Roblox 🧱', 'Offline', 'Schaut YouTube'];
-            friendsListData.forEach(f => f.status = activities[Math.floor(Math.random()*activities.length)]);
-            renderFriends();
-        }
-    }, 7000);
-
-
-    // ---------------- SPIELE SEKTION ----------------
-
-    // BRAWL STARS ENGINE
+    // --- GAME ENGINES (OPTIMIERT GEGEN HINTERGRUND-TRAFFIC) ---
     function initBrawlStars() {
         const cv = document.getElementById('brawlCanvas'); const cx = cv.getContext('2d');
         let bx = 50, by = 150, score = 0, gemX = 300, gemY = 150;
         
         cv.onclick = (e) => {
-            let rect = cv.getBoundingClientRect();
-            bx = e.clientX - rect.left; by = e.clientY - rect.top;
-            
-            // Distanzcheck für Juwelen
+            let rect = cv.getBoundingClientRect(); bx = e.clientX - rect.left; by = e.clientY - rect.top;
             if(Math.hypot(bx - gemX, by - gemY) < 25) {
                 score++; document.getElementById('bs-score-tag').innerText = "Juwelen gesammelt: " + score;
                 gemX = Math.random() * 440 + 20; gemY = Math.random() * 260 + 20;
@@ -673,17 +760,16 @@
         };
 
         function drawBrawl() {
-            if(document.getElementById('win-brawlstars').style.display === 'none') return;
+            if(!brawlLoopId && document.getElementById('win-brawlstars').style.display === 'none') return;
             cx.clearRect(0,0,500,320);
-            cx.fillStyle = '#00ffcc'; cx.beginPath(); cx.arc(gemX, gemY, 10, 0, Math.PI*2); cx.fill(); // Edelstein
-            cx.fillStyle = '#ffcc00'; cx.fillRect(bx - 12, by - 12, 24, 24); // Spieler
-            requestAnimationFrame(drawBrawl);
+            cx.fillStyle = '#00ffcc'; cx.beginPath(); cx.arc(gemX, gemY, 10, 0, Math.PI*2); cx.fill();
+            cx.fillStyle = '#ffcc00'; cx.fillRect(bx - 12, by - 12, 24, 24);
+            brawlLoopId = requestAnimationFrame(drawBrawl);
         }
-        drawBrawl();
+        brawlLoopId = requestAnimationFrame(drawBrawl);
     }
 
-    // ROBLOX ENGINE
-    let rX = 40, rY = 200, isJumping = false, jumpV = 0, robloxInterval;
+    let rX = 40, rY = 200, isJumping = false, jumpV = 0;
     function startRobloxObby() {
         document.getElementById('roblox-lobby').style.display = 'none';
         document.getElementById('roblox-gameplay').style.display = 'block';
@@ -692,26 +778,22 @@
         let obsX = 480;
         
         cv.onclick = () => { if(!isJumping) { isJumping = true; jumpV = -10; } };
-        clearInterval(robloxInterval);
+        if(robloxInterval) clearInterval(robloxInterval);
 
         robloxInterval = setInterval(() => {
             if(isJumping) { rY += jumpV; jumpV += 0.6; if(rY >= 200){ rY = 200; isJumping = false; } }
-            obsX -= 4; if(obsX < -20) obsX = 500;
-            
+            obsX -= 5; if(obsX < -20) obsX = 500;
             cx.clearRect(0,0,500,250);
-            cx.fillStyle = '#333'; cx.fillRect(0, 220, 500, 30); // Boden
-            cx.fillStyle = col; cx.fillRect(rX, rY, 20, 20); // Avatar
-            cx.fillStyle = 'red'; cx.fillRect(obsX, 195, 20, 25); // Hindernis
-            
-            // Kollision
-            if(obsX < rX + 20 && obsX > rX - 20 && rY > 175) { alert('Mensch! Respawnt.'); obsX = 500; }
+            cx.fillStyle = '#333'; cx.fillRect(0, 220, 500, 30);
+            cx.fillStyle = col; cx.fillRect(rX, rY, 20, 20);
+            cx.fillStyle = 'red'; cx.fillRect(obsX, 195, 20, 25);
+            if(obsX < rX + 20 && obsX > rX - 20 && rY > 175) { obsX = 500; }
         }, 20);
     }
 
-    // Altsystem-Kompatibilität für alte Spiele
     let clicks = 0; function doClick() { clicks++; document.getElementById('clicker-score').innerText = clicks + " 💎"; }
-    let flappyInterval; function initFlappy() { /* ... identischer Retro Code aus v3 ... */ }
-    function initPong() { /* ... identischer Retro Code aus v3 ... */ }
+    function initFlappy() {} 
+    function initPong() {}
 </script>
 </body>
 </html>
