@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discord Web Klon</title>
+    <title>Multiplayer Discord Klon</title>
     <style>
         * {
             box-sizing: border-box;
@@ -20,7 +20,7 @@
             overflow: hidden;
         }
 
-        /* 1. Server-Leiste ganz links */
+        /* Server-Leiste ganz links */
         .server-sidebar {
             width: 72px;
             background-color: #1e1f22;
@@ -57,7 +57,7 @@
             color: white;
         }
 
-        /* 2. Kanal-Leiste */
+        /* Kanal-Leiste */
         .channel-sidebar {
             width: 240px;
             background-color: #2b2d31;
@@ -124,7 +124,7 @@
             border-radius: 50%;
         }
 
-        /* 3. Haupt-Chatbereich */
+        /* Haupt-Chatbereich */
         .chat-container {
             flex-grow: 1;
             display: flex;
@@ -182,98 +182,113 @@
             font-size: 15px;
             outline: none;
         }
-
-        .message-input::placeholder {
-            color: #6d6f78;
-        }
     </style>
 </head>
 <body>
 
-    <!-- 1. Server-Sidebar -->
     <div class="server-sidebar">
         <div class="server-icon discord-home">D</div>
-        <div style="width: 32px; height: 2px; background: #35373c; margin: 4px 0;"></div>
-        <div class="server-icon" style="background-color: #e3e5e8;">G1</div>
-        <div class="server-icon" style="background-color: #e3e5e8;">G2</div>
     </div>
 
-    <!-- 2. Channel-Sidebar -->
     <div class="channel-sidebar">
-        <div class="server-header">Mein Gaming Server</div>
+        <div class="server-header">Globaler Chatroom</div>
         <div class="channels-list">
-            <div class="channel-item active">willkommen</div>
-            <div class="channel-item">allgemein</div>
-            <div class="channel-item">memes</div>
-            <div class="channel-item">bot-spam</div>
+            <div class="channel-item active">chat-mit-freunden</div>
         </div>
         <div class="user-panel">
             <div class="user-info">
-                <div class="avatar"></div>
+                <div class="avatar" id="userAvatar"></div>
                 <div>
-                    <div style="font-size: 14px; font-weight: bold; color: white;">GamerPro</div>
-                    <div style="font-size: 12px; color: #949ba4;">#0001</div>
+                    <div id="usernameDisplay" style="font-size: 14px; font-weight: bold; color: white;">Lade...</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 3. Chat-Bereich -->
     <div class="chat-container">
-        <div class="chat-header"># allgemein</div>
+        <div class="chat-header"># chat-mit-freunden</div>
         <div class="messages-area" id="chatMessages">
-            <div class="message">
-                <div class="avatar" style="background-color: #23a55a;"></div>
-                <div class="message-content">
-                    <h4>Admin_Max</h4>
-                    <p>Willkommen auf unserem neuen HTML-Discord-Klon! Schaut euch gerne um.</p>
-                </div>
-            </div>
-            <div class="message">
-                <div class="avatar" style="background-color: #f0b232;"></div>
-                <div class="message-content">
-                    <h4>ZockerOpa</h4>
-                    <p>Sieht echt mega aus! Kann man hier schon Nachrichten schreiben?</p>
-                </div>
-            </div>
+            <!-- Nachrichten landen hier in Echtzeit -->
         </div>
         <div class="input-area">
-            <input type="text" class="message-input" id="msgInput" placeholder="Nachricht an #allgemein">
+            <input type="text" class="message-input" id="msgInput" placeholder="Nachricht senden...">
         </div>
     </div>
 
-    <!-- JavaScript für die Chat-Interaktion -->
-    <script>
-        const input = document.getElementById('msgInput');
-        const chatMessages = document.getElementById('chatMessages');
+    <!-- Firebase SDKs einbinden -->
+    <script type="module">
+        import { initializeApp } from "https://gstatic.com";
+        import { getDatabase, ref, push, onChildAdded } from "https://gstatic.com";
 
+        // 1. HIER DEINE EIGENEN FIREBASE CONFIG-DATEN EINTRAGEN
+        const firebaseConfig = {
+            apiKey: "DEIN_API_KEY",
+            authDomain: "DEIN_://firebaseapp.com",
+            databaseURL: "https://DEIN_://firebaseio.com",
+            projectId: "DEIN_PROJECT",
+            storageBucket: "DEIN_://appspot.com",
+            messagingSenderId: "DEINE_ID",
+            appId: "DEIN_APP_ID"
+        };
+
+        // Firebase initialisieren
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const messagesRef = ref(db, "messages");
+
+        // 2. Benutzernamen festlegen oder abfragen
+        let myUsername = localStorage.getItem("chat_username");
+        if (!myUsername) {
+            myUsername = prompt("Gib deinen Chat-Namen für deine Freunde ein:") || "AnonymerGamer";
+            localStorage.setItem("chat_username", myUsername);
+        }
+        
+        // Zufällige Farbe für den eigenen Avatar generieren
+        let myColor = localStorage.getItem("chat_color");
+        if (!myColor) {
+            myColor = "#" + Math.floor(Math.random()*16777215).toString(16);
+            localStorage.setItem("chat_color", myColor);
+        }
+
+        document.getElementById("usernameDisplay").innerText = myUsername;
+        document.getElementById("userAvatar").style.backgroundColor = myColor;
+
+        // 3. Nachricht an Firebase senden, wenn Enter gedrückt wird
+        const input = document.getElementById('msgInput');
         input.addEventListener('keypress', function(e) {
             if (e.key === 'Enter' && input.value.trim() !== '') {
-                // Neue Nachricht erstellen
-                const newMessage = document.createElement('div');
-                newMessage.className = 'message';
-                newMessage.innerHTML = `
-                    <div class="avatar" style="background-color: #5865f2;"></div>
-                    <div class="message-content">
-                        <h4>GamerPro (Du)</h4>
-                        <p>${escapeHTML(input.value)}</p>
-                    </div>
-                `;
-                
-                // Nachricht hinzufügen und scrollen
-                chatMessages.appendChild(newMessage);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-                
-                // Input leeren
+                push(messagesRef, {
+                    username: myUsername,
+                    text: input.value,
+                    color: myColor,
+                    timestamp: Date.now()
+                });
                 input.value = '';
             }
         });
 
-        // Schutz gegen XSS-Angriffe
+        // 4. In Echtzeit auf neue Nachrichten vom Server lauschen (von allen Geräten)
+        const chatMessages = document.getElementById('chatMessages');
+        onChildAdded(messagesRef, (snapshot) => {
+            const data = snapshot.val();
+            
+            const newMessage = document.createElement('div');
+            newMessage.className = 'message';
+            newMessage.innerHTML = `
+                <div class="avatar" style="background-color: ${data.color || '#5865f2'};"></div>
+                <div class="message-content">
+                    <h4>${escapeHTML(data.username)}</h4>
+                    <p>${escapeHTML(data.text)}</p>
+                </div>
+            `;
+            
+            chatMessages.appendChild(newMessage);
+            chatMessages.scrollTop = chatMessages.scrollHeight; // Automatisch nach unten scrollen
+        });
+
         function escapeHTML(text) {
             return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
     </script>
-
 </body>
 </html>
