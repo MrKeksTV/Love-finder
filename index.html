@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iPadOS Simulator</title>
+    <title>NextGen iPad Simulator</title>
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             user-select: none;
         }
 
         body {
-            background: #2c3e50;
+            background: #1e272e;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -22,45 +22,50 @@
             overflow: hidden;
         }
 
+        /* Modernes iPad-Gehäuse mit dünnem Rahmen */
         #ipad {
-            width: 850px;
-            height: 600px;
-            background: #000;
-            border-radius: 36px;
-            padding: 25px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            width: 1024px;
+            height: 720px;
+            background: #0d0d0d;
+            border-radius: 40px;
+            padding: 16px;
+            box-shadow: 0 30px 70px rgba(0,0,0,0.6);
             position: relative;
-            border: 4px solid #555;
+            border: 2px solid #333;
         }
 
+        /* Liquid Retina Display */
         #screen {
             width: 100%;
             height: 100%;
-            background: url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809') center/cover;
-            border-radius: 15px;
+            background: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200') center/cover;
+            border-radius: 26px;
             position: relative;
             overflow: hidden;
             display: flex;
             flex-direction: column;
         }
 
+        /* Dynamische Statusleiste */
         #status-bar {
-            height: 30px;
-            padding: 0 20px;
+            height: 35px;
+            padding: 0 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             color: white;
-            font-size: 14px;
-            font-weight: 500;
-            z-index: 10;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 1000;
+            background: rgba(0,0,0,0.05);
         }
 
+        /* Home-Screen Layout mit echtem Grid */
         #homescreen {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
-            grid-gap: 25px;
-            padding: 40px;
+            grid-gap: 30px;
+            padding: 50px 60px;
             flex-grow: 1;
             align-content: flex-start;
         }
@@ -70,137 +75,200 @@
             flex-direction: column;
             align-items: center;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: transform 0.2s, filter 0.2s;
+        }
+
+        .app-icon:hover {
+            transform: scale(1.05);
         }
 
         .app-icon:active {
-            transform: scale(0.9);
+            transform: scale(0.95);
         }
 
         .app-icon img {
-            width: 70px;
-            height: 70px;
-            border-radius: 16px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            margin-bottom: 8px;
+            width: 76px;
+            height: 76px;
+            border-radius: 18px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.25);
+            margin-bottom: 10px;
+            object-fit: cover;
         }
 
         .app-icon span {
             color: white;
-            font-size: 12px;
+            font-size: 13px;
+            font-weight: 500;
             text-align: center;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+        }
+
+        /* Schwebendes iOS 17/18 Dock */
+        #dock-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            position: absolute;
+            bottom: 20px;
+            z-index: 999;
         }
 
         #dock {
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            height: 90px;
-            margin: 0 auto 20px auto;
-            padding: 10px 30px;
-            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            padding: 12px 24px;
+            border-radius: 28px;
             display: flex;
-            gap: 20px;
-            justify-content: center;
+            gap: 18px;
             align-items: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.15);
         }
 
         #dock .app-icon img {
-            width: 65px;
-            height: 65px;
+            width: 68px;
+            height: 68px;
             margin-bottom: 0;
         }
 
+        /* App-Fenster (Stage Manager Style) */
         .app-window {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: white;
+            top: 60px;
+            left: 80px;
+            width: 800px;
+            height: 540px;
+            background: #ffffff;
+            border-radius: 16px;
             z-index: 100;
             display: none;
             flex-direction: column;
-            animation: zoomIn 0.3s ease-out;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+            border: 1px solid rgba(0,0,0,0.15);
+            overflow: hidden;
+            transform: scale(0.9);
+            opacity: 0;
+            transition: transform 0.25s cubic-bezier(0.1, 0.8, 0.25, 1), opacity 0.25s;
         }
 
-        @keyframes zoomIn {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+        .app-window.active {
+            transform: scale(1);
+            opacity: 1;
         }
 
+        /* Fenster Header */
         .app-header {
-            height: 50px;
-            background: #f6f6f6;
-            border-bottom: 1px solid #ddd;
+            height: 52px;
+            background: #f1f2f6;
+            border-bottom: 1px solid #e1e2e6;
             display: flex;
             align-items: center;
             padding: 0 20px;
             justify-content: space-between;
+            cursor: move;
         }
 
-        .btn-home {
-            background: #007aff;
-            color: white;
+        .window-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .win-btn {
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
             border: none;
-            padding: 6px 14px;
-            border-radius: 12px;
             cursor: pointer;
-            font-weight: bold;
+        }
+        .win-close { background: #ff5f56; }
+        .win-min { background: #ffbd2e; }
+
+        .app-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
         }
 
         .app-content {
             flex-grow: 1;
-            padding: 20px;
-            overflow-y: auto;
+            overflow: auto;
+            position: relative;
         }
 
-        #store-content {
-            background: #f0f0f6;
+        /* App Store Design */
+        .store-banner {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            padding: 25px;
+            color: white;
+            border-radius: 14px;
+            margin-bottom: 25px;
+        }
+        .store-shelf {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
         .store-item {
-            background: white;
-            padding: 15px;
-            border-radius: 14px;
+            background: #f8f9fa;
+            padding: 16px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #eee;
         }
         .store-item-info {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 16px;
         }
         .store-item img {
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
+            width: 64px;
+            height: 64px;
+            border-radius: 14px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
         }
         .btn-get {
             background: #007aff;
             color: white;
             border: none;
-            padding: 6px 18px;
+            padding: 8px 20px;
             border-radius: 20px;
-            font-weight: bold;
+            font-weight: 700;
+            font-size: 13px;
             cursor: pointer;
+            transition: background 0.2s;
         }
-        .btn-get.installed {
-            background: #e5e5ea;
-            color: #8e8e93;
-            cursor: default;
+        .btn-get:hover { background: #0063cc; }
+        .btn-get.installed { background: #e5e5ea; color: #8e8e93; cursor: default; }
+
+        /* Game UI */
+        .game-wrapper {
+            background: #111;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        canvas {
+            background: #1a1a1a;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border-radius: 8px;
         }
 
-        canvas {
-            display: block;
-            margin: 0 auto;
-            background: #70c5ce;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        /* Home-Indicator Balken unten */
+        #home-bar {
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 220px;
+            height: 5px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 10px;
+            z-index: 1000;
             cursor: pointer;
         }
     </style>
@@ -210,211 +278,319 @@
 <div id="ipad">
     <div id="screen">
         
+        <!-- Status Bar -->
         <div id="status-bar">
             <span id="current-time">09:41</span>
-            <div style="display:flex; gap: 8px;">
+            <div style="display:flex; gap: 10px; font-size: 14px;">
+                <span>⚡</span>
                 <span>📶</span>
-                <span>🔋 100%</span>
+                <span>🔋 99%</span>
             </div>
         </div>
 
+        <!-- Homescreen Grid -->
         <div id="homescreen">
-            <div class="app-icon" onclick="openApp('safari')">
+            <div class="app-icon" onclick="openWindow('safari')">
                 <img src="https://cdn-icons-png.flaticon.com/512/300/300214.png" alt="Safari">
                 <span>Safari</span>
             </div>
-            <div class="app-icon" onclick="openApp('notes')">
+            <div class="app-icon" onclick="openWindow('notes')">
                 <img src="https://cdn-icons-png.flaticon.com/512/889/889649.png" alt="Notizen">
                 <span>Notizen</span>
             </div>
-            
+            <!-- Hier spawnen geladene Apps -->
             <div id="installed-apps" style="display: contents;"></div>
         </div>
 
-        <div id="dock">
-            <div class="app-icon" onclick="openApp('appstore')">
-                <img src="https://cdn-icons-png.flaticon.com/512/512/512395.png" alt="App Store">
+        <!-- Schwebendes Dock -->
+        <div id="dock-container">
+            <div id="dock">
+                <div class="app-icon" onclick="openWindow('safari')"><img src="https://cdn-icons-png.flaticon.com/512/300/300214.png"></div>
+                <div class="app-icon" onclick="openWindow('appstore')"><img src="https://cdn-icons-png.flaticon.com/512/512/512395.png"></div>
             </div>
         </div>
 
-    </div>
+        <!-- Home Bar -->
+        <div id="home-bar" onclick="closeAllApps()"></div>
 
-    <div id="app-safari" class="app-window">
-        <div class="app-header">
-            <h3>Safari Browser</h3>
-            <button class="btn-home" onclick="closeApp('safari')">Home</button>
-        </div>
-        <div class="app-content">
-            <iframe src="https://www.wikipedia.org" style="width:100%; height:100%; border:none;"></iframe>
-        </div>
-    </div>
+        <!-- ---------------- APPS FENSTER ---------------- -->
 
-    <div id="app-notes" class="app-window">
-        <div class="app-header">
-            <h3>Notizen</h3>
-            <button class="btn-home" onclick="closeApp('notes')">Home</button>
+        <!-- SAFARI -->
+        <div id="win-safari" class="app-window">
+            <div class="app-header">
+                <div class="window-controls">
+                    <button class="win-btn win-close" onclick="closeWindow('safari')"></button>
+                    <button class="win-btn win-min" onclick="closeWindow('safari')"></button>
+                </div>
+                <div class="app-title">Safari Browser</div>
+                <div style="width:26px;"></div>
+            </div>
+            <div class="app-content">
+                <iframe src="https://www.wikipedia.org" style="width:100%; height:100%; border:none;"></iframe>
+            </div>
         </div>
-        <div class="app-content">
-            <textarea placeholder="Schreibe hier etwas..." style="width:100%; height:90%; border:none; resize:none; font-size:18px; outline:none;"></textarea>
-        </div>
-    </div>
 
-    <div id="app-appstore" class="app-window">
-        <div class="app-header">
-            <h2>App Store</h2>
-            <button class="btn-home" onclick="closeApp('appstore')">Home</button>
+        <!-- NOTIZEN -->
+        <div id="win-notes" class="app-window">
+            <div class="app-header">
+                <div class="window-controls">
+                    <button class="win-btn win-close" onclick="closeWindow('notes')"></button>
+                    <button class="win-btn win-min" onclick="closeWindow('notes')"></button>
+                </div>
+                <div class="app-title">Notizen</div>
+                <div style="width:26px;"></div>
+            </div>
+            <div class="app-content" style="padding: 24px;">
+                <textarea placeholder="Neue Notiz verfassen..." style="width:100%; height:100%; border:none; resize:none; font-size:18px; outline:none; background:transparent;"></textarea>
+            </div>
         </div>
-        <div id="store-content" class="app-content">
-            <div class="store-item">
-                <div class="store-item-info">
-                    <img src="https://cdn-icons-png.flaticon.com/512/528/528073.png" alt="Flappy Game">
-                    <div>
-                        <h4>Flappy Bird Pro</h4>
-                        <p style="color:#666; font-size:12px;">Spiele den Klassiker</p>
+
+        <!-- APP STORE -->
+        <div id="win-appstore" class="app-window">
+            <div class="app-header">
+                <div class="window-controls">
+                    <button class="win-btn win-close" onclick="closeWindow('appstore')"></button>
+                    <button class="win-btn win-min" onclick="closeWindow('appstore')"></button>
+                </div>
+                <div class="app-title">App Store</div>
+                <div style="width:26px;"></div>
+            </div>
+            <div class="app-content" style="padding: 24px; background: #fafafa;">
+                <div class="store-banner">
+                    <h2>Entdecke neue Welten</h2>
+                    <p>Exklusive Arcade-Simulationen direkt für dein virtuelles iPad.</p>
+                </div>
+                <div class="store-shelf">
+                    <!-- Spiel 1 -->
+                    <div class="store-item">
+                        <div class="store-item-info">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3313/3313434.png" alt="Space Game">
+                            <div>
+                                <h4 style="color:#222;">Retro Space Invaders</h4>
+                                <p style="color:#666; font-size:13px;">Verteidige das All</p>
+                            </div>
+                        </div>
+                        <button id="btn-space" class="btn-get" onclick="installApp('space', 'Space Arcade', 'https://cdn-icons-png.flaticon.com/512/3313/3313434.png')">LADEN</button>
                     </div>
                 </div>
-                <button id="btn-install-game" class="btn-get" onclick="installApp('game', 'Flappy Bird Pro', 'https://cdn-icons-png.flaticon.com/512/528/528073.png')">LADEN</button>
             </div>
         </div>
-    </div>
 
-    <div id="app-game" class="app-window">
-        <div class="app-header">
-            <h3>Flappy Bird Pro</h3>
-            <button class="btn-home" onclick="closeApp('game'); stopGame();">Home</button>
+        <!-- GAME: SPACE ARCADE -->
+        <div id="win-space" class="app-window">
+            <div class="app-header">
+                <div class="window-controls">
+                    <button class="win-btn win-close" onclick="closeWindow('space'); stopSpaceGame();"></button>
+                    <button class="win-btn win-min" onclick="closeWindow('space'); stopSpaceGame();"></button>
+                </div>
+                <div class="app-title">Retro Space Invaders</div>
+                <div style="width:26px;"></div>
+            </div>
+            <div class="app-content game-wrapper">
+                <div style="position: absolute; top:10px; color:#fff; font-size:12px; font-weight:bold; pointer-events: none;">Pfeiltasten [←] [→] zum Bewegen | [Leertaste] zum Schießen</div>
+                <canvas id="spaceCanvas" width="600" height="440"></canvas>
+            </div>
         </div>
-        <div class="app-content" style="background:#4ec0ca; display:flex; justify-content:center; align-items:center; flex-direction:column;">
-            <p style="color:white; margin-bottom:10px; font-weight:bold;">Klicke ins Spielfeld zum Springen!</p>
-            <canvas id="gameCanvas" width="400" height="400"></canvas>
-        </div>
-    </div>
 
+    </div>
 </div>
 
 <script>
-    function updateTime() {
-        const now = new Date();
-        let hours = now.getHours().toString().padStart(2, '0');
-        let minutes = now.getMinutes().toString().padStart(2, '0');
-        document.getElementById('current-time').innerText = `${hours}:${minutes}`;
+    // System-Uhrzeit (2026-Ready)
+    function updateClock() {
+        const d = new Date();
+        document.getElementById('current-time').innerText = d.toLocaleTimeString('de-DE', {hour: '2-digit', minute:'2-digit'});
     }
-    setInterval(updateTime, 1000);
-    updateTime();
+    setInterval(updateClock, 1000);
+    updateClock();
 
-    function openApp(appId) {
-        document.getElementById(`app-${appId}`).style.display = 'flex';
-        if(appId === 'game') {
-            startGame();
-        }
+    // Fenster-Manager (Öffnen, Schließen, Z-Index)
+    let topZIndex = 100;
+
+    function openWindow(id) {
+        const win = document.getElementById(`win-${id}`);
+        win.style.display = 'flex';
+        topZIndex++;
+        win.style.zIndex = topZIndex;
+        
+        setTimeout(() => {
+            win.classList.add('active');
+        }, 10);
+
+        if(id === 'space') startSpaceGame();
     }
 
-    function closeApp(appId) {
-        document.getElementById(`app-${appId}`).style.display = 'none';
+    function closeWindow(id) {
+        const win = document.getElementById(`win-${id}`);
+        win.classList.remove('active');
+        setTimeout(() => { win.style.display = 'none'; }, 200);
     }
 
+    function closeAllApps() {
+        document.querySelectorAll('.app-window').forEach(win => {
+            win.classList.remove('active');
+            setTimeout(() => { win.style.display = 'none'; }, 200);
+        });
+        stopSpaceGame();
+    }
+
+    // App Store Simulator
     function installApp(id, name, iconUrl) {
-        const btn = document.getElementById('btn-install-game');
+        const btn = document.getElementById(`btn-${id}`);
         if(btn.classList.contains('installed')) return;
 
-        btn.innerText = 'Wird geladen...';
-        btn.style.opacity = '0.7';
-
+        btn.innerText = 'Wird installiert...';
+        
         setTimeout(() => {
             btn.innerText = 'GEÖFFNET';
             btn.classList.add('installed');
-            btn.style.opacity = '1';
 
-            const installedAppsContainer = document.getElementById('installed-apps');
-            installedAppsContainer.innerHTML = `
-                <div class="app-icon" onclick="openApp('${id}')">
+            // Icon auf Homescreen zeichnen
+            const container = document.getElementById('installed-apps');
+            container.innerHTML += `
+                <div class="app-icon" onclick="openWindow('${id}')">
                     <img src="${iconUrl}" alt="${name}">
                     <span>${name}</span>
                 </div>
             `;
-        }, 1500);
+        }, 1200);
     }
 
-    const canvas = document.getElementById('gameCanvas');
+    // --- GAME ENGINE: SPACE INVADERS ---
+    const canvas = document.getElementById('spaceCanvas');
     const ctx = canvas.getContext('2d');
-    let animationFrameId;
-    let bird, pipes, score, gameOver;
+    let spaceLoopId;
+    let player, lasers, enemies, keys, spaceScore, spaceGameOver;
 
-    function startGame() {
-        bird = { x: 50, y: 150, velocity: 0, gravity: 0.4, jump: -6, radius: 12 };
-        pipes = [];
-        score = 0;
-        gameOver = false;
-        canvas.removeEventListener('click', restartGameLoop);
-        canvas.addEventListener('click', () => bird.velocity = bird.jump);
-        gameLoop();
+    function startSpaceGame() {
+        player = { x: 280, y: 400, w: 40, h: 20, speed: 5 };
+        lasers = [];
+        enemies = [];
+        keys = {};
+        spaceScore = 0;
+        spaceGameOver = false;
+
+        // Gegner erzeugen
+        for(let r=0; r<3; r++) {
+            for(let c=0; c<8; c++) {
+                enemies.push({ x: 50 + c*60, y: 40 + r*40, w: 30, h: 20, alive: true });
+            }
+        }
+
+        window.addEventListener('keydown', handleKeyDown);
+        window.addEventListener('keyup', handleKeyUp);
+        
+        if(spaceLoopId) cancelAnimationFrame(spaceLoopId);
+        runSpaceGame();
     }
 
-    function stopGame() {
-        cancelAnimationFrame(animationFrameId);
+    function stopSpaceGame() {
+        cancelAnimationFrame(spaceLoopId);
+        window.removeEventListener('keydown', handleKeyDown);
+        window.removeEventListener('keyup', handleKeyUp);
     }
 
-    function restartGameLoop() {
-        if(gameOver) startGame();
+    function handleKeyDown(e) { keys[e.code] = true; if(e.code === 'Space' && !spaceGameOver) fireLaser(); if(e.code === 'Space' && spaceGameOver) startSpaceGame(); }
+    function handleKeyUp(e) { keys[e.code] = false; }
+
+    function fireLaser() {
+        lasers.push({ x: player.x + player.w/2 - 2, y: player.y, w: 4, h: 10, speed: 7 });
     }
 
-    function gameLoop() {
-        if (gameOver) {
-            ctx.fillStyle = 'rgba(0,0,0,0.5)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+    function runSpaceGame() {
+        ctx.clearRect(0,0,canvas.width, canvas.height);
+
+        if(spaceGameOver) {
             ctx.fillStyle = 'white';
             ctx.font = '24px sans-serif';
-            ctx.fillText('Game Over', 140, 180);
+            ctx.fillText("GAME OVER", 220, 200);
             ctx.font = '16px sans-serif';
-            ctx.fillText('Klicke zum Neustarten', 120, 220);
-            canvas.addEventListener('click', restartGameLoop);
+            ctx.fillText("Drücke [Leertaste] für Neustart", 180, 240);
             return;
         }
 
-        bird.velocity += bird.gravity;
-        bird.y += bird.velocity;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        ctx.fillStyle = '#f1c40f';
-        ctx.beginPath();
-        ctx.arc(bird.x, bird.y, bird.radius, 0, Math.PI * 2);
-        ctx.fill();
+        // Spielersteuerung
+        if(keys['ArrowLeft'] && player.x > 0) player.x -= player.speed;
+        if(keys['ArrowRight'] && player.x < canvas.width - player.w) player.x += player.speed;
 
-        if (pipes.length === 0 || pipes[pipes.length - 1].x < canvas.width - 150) {
-            let gap = 110;
-            let topHeight = Math.floor(Math.random() * (canvas.height - gap - 60)) + 30;
-            pipes.push({ x: canvas.width, top: topHeight, bottom: canvas.height - topHeight - gap });
+        // Spieler zeichnen
+        ctx.fillStyle = '#00afff';
+        ctx.fillRect(player.x, player.y, player.w, player.h);
+
+        // Laser bewegen & zeichnen
+        ctx.fillStyle = '#ff4d4d';
+        for(let i=lasers.length-1; i>=0; i--) {
+            lasers[i].y -= lasers[i].speed;
+            ctx.fillRect(lasers[i].x, lasers[i].y, lasers[i].w, lasers[i].h);
+            if(lasers[i].y < 0) lasers.splice(i,1);
         }
 
-        ctx.fillStyle = '#2ecc71';
-        for (let i = pipes.length - 1; i >= 0; i--) {
-            pipes[i].x -= 2;
+        // Gegner bewegen & zeichnen
+        let activeEnemies = 0;
+        ctx.fillStyle = '#2ed573';
+        enemies.forEach(enemy => {
+            if(!enemy.alive) return;
+            activeEnemies++;
+            
+            // Ganz langsame Abwärtsbewegung
+            enemy.y += 0.15;
+            ctx.fillRect(enemy.x, enemy.y, enemy.w, enemy.h);
 
-            ctx.fillRect(pipes[i].x, 0, 40, pipes[i].top);
-            ctx.fillRect(pipes[i].x, canvas.height - pipes[i].bottom, 40, pipes[i].bottom);
-
-            if (bird.x + bird.radius > pipes[i].x && bird.x - bird.radius < pipes[i].x + 40) {
-                if (bird.y - bird.radius < pipes[i].top || bird.y + bird.radius > canvas.height - pipes[i].bottom) {
-                    gameOver = true;
+            // Hitbox-Prüfung Laser vs Gegner
+            lasers.forEach((laser, lIdx) => {
+                if(laser.x > enemy.x && laser.x < enemy.x + enemy.w && laser.y > enemy.y && laser.y < enemy.y + enemy.h) {
+                    enemy.alive = false;
+                    lasers.splice(lIdx, 1);
+                    spaceScore += 10;
                 }
-            }
+            });
 
-            if (pipes[i].x === bird.x) {
-                score++;
+            // Kollision mit Spieler oder Boden
+            if(enemy.y + enemy.h >= player.y) {
+                spaceGameOver = true;
             }
+        });
 
-            if (pipes[i].x < -40) pipes.splice(i, 1);
+        if(activeEnemies === 0) {
+            spaceGameOver = true; // Gewonnen ist hier auch vorbei
         }
 
-        if (bird.y + bird.radius > canvas.height || bird.y - bird.radius < 0) {
-            gameOver = true;
-        }
+        // Score
+        ctx.fillStyle = '#fff';
+        ctx.font = '16px sans-serif';
+        ctx.fillText(`Score: ${spaceScore}`, 20, 30);
 
-        ctx.fillStyle = 'white';
-        ctx.font = '20px sans-serif';
-        ctx.fillText(`Score: ${score}`, 15, 30);
-
-        animationFrameId = requestAnimationFrame(gameLoop);
+        spaceLoopId = requestAnimationFrame(runSpaceGame);
     }
+
+    // Drag-and-Drop (Fenster bewegen) Feature für iPad OS Feeling
+    document.querySelectorAll('.app-header').forEach(header => {
+        header.onmousedown = function(e) {
+            const win = header.parentElement;
+            topZIndex++;
+            win.style.zIndex = topZIndex;
+
+            let shiftX = e.clientX - win.getBoundingClientRect().left;
+            let shiftY = e.clientY - win.getBoundingClientRect().top;
+
+            function moveAt(clientX, clientY) {
+                let screenRect = document.getElementById('screen').getBoundingClientRect();
+                let x = clientX - screenRect.left - shiftX;
+                let y = clientY - screenRect.top - shiftY;
+                win.style.left = x + 'px';
+                win.style.top = y + 'px';
+            }
+
+            function onMouseMove(e) { moveAt(e.clientX, e.clientY); }
+            document.addEventListener('mousemove', onMouseMove);
+
+            document.onmouseup = function() {
+                document.removeEventListener('mousemove', onMouseMove);
+                document.onmouseup = null;
+            };
+        };
+        header.ondragstart = function() { return false; };
+    });
 </script>
 
 </body>
