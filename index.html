@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>iPadOS Ultimate Simulator</title>
+    <title>iPadOS Pro Ultimate - MultiUser Edition</title>
     <style>
         * {
             box-sizing: border-box;
@@ -21,10 +21,11 @@
             --window-bg: #ffffff;
             --window-text: #111111;
             --sidebar-bg: #f2f2f7;
+            --card-bg: rgba(150,150,150,0.1);
         }
 
         body {
-            background: #111216;
+            background: #0f1013;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -39,10 +40,9 @@
             background: #000;
             border-radius: 38px;
             padding: 15px;
-            box-shadow: 0 35px 90px rgba(0,0,0,0.85);
+            box-shadow: 0 35px 90px rgba(0,0,0,0.9);
             position: relative;
             border: 2px solid #252525;
-            transition: all 0.3s ease;
         }
 
         @media (max-width: 1050px) {
@@ -73,6 +73,67 @@
             font-size: 13px;
             font-weight: 600;
             z-index: 10000;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+        }
+
+        /* --- LOCKSCREEN & REGISTRIERUNG --- */
+        #lockscreen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: transform 0.4s cubic-bezier(0.1, 0.9, 0.2, 1), opacity 0.3s;
+        }
+        #lock-time { font-size: 74px; font-weight: 200; margin-top: -40px; }
+        #lock-date { font-size: 20px; font-weight: 400; margin-bottom: 40px; opacity: 0.9; }
+        
+        .auth-container {
+            background: rgba(255,255,255,0.12);
+            padding: 24px;
+            border-radius: 20px;
+            width: 320px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .auth-container h3 { margin-bottom: 15px; font-weight: 500; }
+        .auth-input {
+            width: 100%;
+            padding: 12px;
+            margin: 6px 0;
+            border-radius: 10px;
+            border: none;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            font-size: 15px;
+            outline: none;
+            text-align: center;
+        }
+        .auth-input::placeholder { color: rgba(255,255,255,0.6); }
+        .auth-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--tint-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            margin-top: 12px;
+            cursor: pointer;
+        }
+        .auth-toggle {
+            font-size: 13px;
+            margin-top: 12px;
+            color: #a2a2a7;
+            cursor: pointer;
+            text-decoration: underline;
         }
 
         /* Homescreen Grid */
@@ -93,38 +154,27 @@
             align-items: center;
             cursor: pointer;
             position: relative;
-            transition: transform 0.2s;
             width: 90px;
             justify-self: center;
         }
 
         /* Originalgetreues App Store Logo via CSS */
         .appstore-logo-css {
-            width: 72px;
-            height: 72px;
+            width: 72px; height: 72px;
             background: linear-gradient(180deg, #34a4fe, #0072ff);
             border-radius: 16px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
+            display: flex; justify-content: center; align-items: center; position: relative;
         }
         .appstore-logo-css::before, .appstore-logo-css::after, .appstore-logo-css .stick-3 {
-            content: '';
-            position: absolute;
-            width: 38px;
-            height: 7px;
-            background: white;
-            border-radius: 4px;
+            content: ''; position: absolute; width: 38px; height: 7px; background: white; border-radius: 4px;
         }
         .appstore-logo-css::before { transform: rotate(-60deg) translate(-2px, -7px); }
         .appstore-logo-css::after { transform: rotate(60deg) translate(2px, -7px); }
         .appstore-logo-css .stick-3 { transform: rotate(0deg) translate(0px, 6px); }
 
         .app-icon img, .custom-icon {
-            width: 72px;
-            height: 72px;
+            width: 72px; height: 72px;
             border-radius: 16px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.3);
             margin-bottom: 8px;
@@ -132,218 +182,115 @@
         }
 
         .app-icon span {
-            color: white;
-            font-size: 12px;
-            font-weight: 500;
-            text-align: center;
-            text-shadow: 0 2px 6px rgba(0,0,0,0.8);
-            width: 100%;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            color: white; font-size: 12px; font-weight: 500; text-align: center;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.8); width: 100%;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
 
-        /* Jiggle / Wackel-Modus fürs Umsortieren & Löschen */
+        /* Wackel-Modus */
         @keyframes jiggle {
             0% { transform: rotate(-1.5deg); }
             50% { transform: rotate(1.5deg); }
             100% { transform: rotate(-1.5deg); }
         }
-        .wiggling {
-            animation: jiggle 0.25s infinite ease-in-out;
-        }
+        .wiggling { animation: jiggle 0.25s infinite ease-in-out; }
         .delete-badge {
-            position: absolute;
-            top: -6px;
-            left: -6px;
-            background: #ff3b30;
-            color: white;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            font-size: 14px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-            z-index: 10;
+            position: absolute; top: -6px; left: -6px;
+            background: #ff3b30; color: white; width: 22px; height: 22px;
+            border-radius: 50%; display: none; justify-content: center; align-items: center;
+            font-weight: bold; font-size: 14px; box-shadow: 0 2px 5px rgba(0,0,0,0.3); z-index: 10;
         }
         .wiggling .delete-badge { display: flex; }
+        .dragging { opacity: 0.4; transform: scale(1.1); z-index: 9999; }
 
-        /* Dragging State */
-        .dragging {
-            opacity: 0.5;
-            transform: scale(1.1);
-            z-index: 9999;
-        }
-
-        /* Schwebendes Dock */
-        #dock-container {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            position: absolute;
-            bottom: 20px;
-            z-index: 999;
-        }
+        /* Dock */
+        #dock-container { width: 100%; display: flex; justify-content: center; position: absolute; bottom: 20px; z-index: 999; }
         #dock {
-            background: rgba(255, 255, 255, 0.22);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            padding: 10px 24px;
-            border-radius: 26px;
-            display: flex;
-            gap: 16px;
-            align-items: center;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-            border: 1px solid rgba(255,255,255,0.2);
-            min-width: 150px;
+            background: rgba(255, 255, 255, 0.22); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            padding: 10px 24px; border-radius: 26px; display: flex; gap: 16px; align-items: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2); min-width: 200px;
         }
         #dock .app-icon img, #dock .appstore-logo-css { width: 64px; height: 64px; margin-bottom: 0; }
 
-        /* iOS App Fenster */
+        /* App Fenster */
         .app-window {
-            position: absolute;
-            top: 5%;
-            left: 5%;
-            width: 90%;
-            height: 86%;
-            background: var(--window-bg);
-            color: var(--window-text);
-            border-radius: 18px;
-            z-index: 100;
-            display: none;
-            flex-direction: column;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.4);
-            overflow: hidden;
-            opacity: 0;
-            transform: scale(0.95);
-            transition: transform 0.25s cubic-bezier(0.1, 0.9, 0.2, 1), opacity 0.25s, background 0.3s;
+            position: absolute; top: 5%; left: 5%; width: 90%; height: 86%;
+            background: var(--window-bg); color: var(--window-text); border-radius: 18px;
+            z-index: 100; display: none; flex-direction: column;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.4); overflow: hidden;
+            opacity: 0; transform: scale(0.95);
+            transition: transform 0.25s cubic-bezier(0.1, 0.9, 0.2, 1), opacity 0.25s;
         }
         .app-window.active { opacity: 1; transform: scale(1); }
-
         .app-header {
-            height: 52px;
-            background: rgba(150,150,150,0.08);
+            height: 52px; background: rgba(150,150,150,0.08);
             border-bottom: 1px solid rgba(150,150,150,0.15);
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-            justify-content: space-between;
+            display: flex; align-items: center; padding: 0 20px; justify-content: space-between;
         }
-        .win-close {
-            background: #ff5f56;
-            width: 13px;
-            height: 13px;
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
-        }
+        .win-close { background: #ff5f56; width: 13px; height: 13px; border-radius: 50%; border: none; cursor: pointer; }
         .app-title { font-size: 16px; font-weight: 600; }
-
         .app-content { flex-grow: 1; overflow: auto; position: relative; display: flex; }
 
-        /* --- SETTINGS APP LAYOUT --- */
+        /* --- SETTINGS APP UPGRADED --- */
         .settings-sidebar {
-            width: 30%;
-            background: var(--sidebar-bg);
-            border-right: 1px solid rgba(150,150,150,0.15);
-            padding: 20px 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+            width: 32%; background: var(--sidebar-bg);
+            border-right: 1px solid rgba(150,150,150,0.15); padding: 15px 10px;
+            display: flex; flex-direction: column; gap: 6px;
         }
         .settings-menu-item {
-            padding: 12px 16px;
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: 500;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            padding: 12px 14px; border-radius: 10px; font-size: 14px; font-weight: 500;
+            cursor: pointer; display: flex; align-items: center; gap: 12px; color: var(--window-text);
         }
-        .settings-menu-item.active {
-            background: var(--tint-color);
-            color: white;
-        }
-        .settings-panel {
-            width: 70%;
-            padding: 30px;
-            display: none;
-            flex-direction: column;
-            gap: 20px;
-        }
+        .settings-menu-item.active { background: var(--tint-color); color: white; }
+        .settings-panel { width: 68%; padding: 30px; display: none; flex-direction: column; gap: 18px; }
         .settings-panel.active { display: flex; }
-        .wallpaper-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            grid-gap: 15px;
-            margin-top: 15px;
+        
+        .settings-card {
+            background: var(--card-bg); padding: 16px; border-radius: 12px;
+            display: flex; flex-direction: column; gap: 10px;
         }
+        .settings-row { display: flex; justify-content: space-between; align-items: center; }
+
+        .wallpaper-grid { display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 12px; margin-top: 10px; }
         .wp-thumb {
-            height: 100px;
-            border-radius: 10px;
-            cursor: pointer;
-            border: 3px solid transparent;
-            background-size: cover;
-            background-position: center;
+            height: 85px; border-radius: 10px; cursor: pointer;
+            border: 3px solid transparent; background-size: cover; background-position: center;
         }
         .wp-thumb.selected { border-color: var(--tint-color); }
 
         /* Toggle Switch */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 51px;
-            height: 31px;
-        }
+        .switch { position: relative; display: inline-block; width: 46px; height: 26px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider {
             position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #e5e5ea; transition: .3s; border-radius: 34px;
+            background-color: #e5e5ea; transition: .2s; border-radius: 34px;
         }
         .slider:before {
-            position: absolute; content: ""; height: 27px; width: 27px; left: 2px; bottom: 2px;
-            background-color: white; transition: .3s; border-radius: 50%;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+            position: absolute; content: ""; height: 22px; width: 22px; left: 2px; bottom: 2px;
+            background-color: white; transition: .2s; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.15);
         }
         input:checked + .slider { background-color: #34c759; }
         input:checked + .slider:before { transform: translateX(20px); }
 
-        /* App Store Inneres */
-        .store-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            grid-gap: 16px;
-            padding: 20px;
-            width: 100%;
-        }
+        /* App Store Design */
+        .store-grid { display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 16px; padding: 20px; width: 100%; }
         .store-item {
-            background: rgba(150,150,150,0.05);
-            padding: 16px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            background: var(--card-bg); padding: 16px; border-radius: 16px;
+            display: flex; align-items: center; justify-content: space-between;
             border: 1px solid rgba(150,150,150,0.1);
         }
         .store-info { display: flex; align-items: center; gap: 14px; }
         .store-info img { width: 55px; height: 55px; border-radius: 12px; }
+        .btn-get {
+            background: #f0f0f7; color: var(--tint-color); border: none;
+            padding: 6px 16px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer;
+        }
+        .btn-get.installed { background: rgba(142,142,147,0.2); color: #8e8e93; }
         
-        /* Home Bar unten */
         #home-bar {
-            position: absolute;
-            bottom: 6px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 210px;
-            height: 5px;
-            background: rgba(255,255,255,0.75);
-            border-radius: 10px;
-            z-index: 100000;
-            cursor: pointer;
+            position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%);
+            width: 210px; height: 5px; background: rgba(255,255,255,0.75);
+            border-radius: 10px; z-index: 100000; cursor: pointer;
         }
 
         /* Dark Mode Overrides */
@@ -351,7 +298,12 @@
             --window-bg: #1c1c1e;
             --window-text: #ffffff;
             --sidebar-bg: #2c2c2e;
+            --card-bg: rgba(255,255,255,0.06);
         }
+
+        /* --- GAME ENGINE STYLE (CANVAS & CSS) --- */
+        .game-container { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #000; color: white; }
+        .game-canvas { background: #111; border: 2px solid #333; border-radius: 8px; }
     </style>
 </head>
 <body>
@@ -362,33 +314,45 @@
         <!-- Status Bar -->
         <div id="status-bar">
             <span id="current-time">09:41</span>
-            <div style="display:flex; gap: 6px;"><span>📶</span><span>🔋 100%</span></div>
+            <div style="display:flex; gap: 8px; align-items:center;">
+                <span id="user-display-tag" style="background:rgba(255,255,255,0.2); padding: 2px 8px; border-radius:10px; font-size:11px;">Gast</span>
+                <span>🔒</span><span>📶</span><span>🔋 100%</span>
+            </div>
         </div>
 
-        <!-- Homescreen Grid (Unterstützt Drag & Drop Sortierung) -->
+        <!-- LOCKSCREEN & ACCOUNT LOGIN/REGISTRIERUNG -->
+        <div id="lockscreen">
+            <div id="lock-time">09:41</div>
+            <div id="lock-date">Donnerstag, 21. Mai</div>
+
+            <!-- Login Formular -->
+            <div class="auth-container" id="auth-login-box">
+                <h3>iPad Entsperren</h3>
+                <input type="text" id="login-user" class="auth-input" placeholder="Benutzername">
+                <input type="password" id="login-pass" class="auth-input" placeholder="Passcode (Zahlen)">
+                <button class="auth-btn" onclick="handleLogin()">Entsperren</button>
+                <div class="auth-toggle" onclick="toggleAuthBoxes(false)">Neuen Account registrieren</div>
+            </div>
+
+            <!-- Registrierungs Formular -->
+            <div class="auth-container" id="auth-register-box" style="display: none;">
+                <h3>iPad einrichten</h3>
+                <input type="text" id="reg-user" class="auth-input" placeholder="Gewünschter Name">
+                <input type="password" id="reg-pass" class="auth-input" placeholder="Passcode festlegen">
+                <button class="auth-btn" onclick="handleRegister()">Account erstellen</button>
+                <div class="auth-toggle" onclick="toggleAuthBoxes(true)">Bereits registriert? Login</div>
+            </div>
+        </div>
+
+        <!-- Homescreen Grid -->
         <div id="homescreen">
-            <div class="app-icon" id="app-safari-icon" draggable="true" data-appid="safari">
-                <div class="delete-badge">−</div>
-                <img src="https://cdn-icons-png.flaticon.com/512/300/300214.png">
-                <span>Safari</span>
-            </div>
-            <div class="app-icon" id="app-notes-icon" draggable="true" data-appid="notes">
-                <div class="delete-badge">−</div>
-                <img src="https://cdn-icons-png.flaticon.com/512/889/889649.png">
-                <span>Notizen</span>
-            </div>
-            <div class="app-icon" id="app-settings-icon" draggable="true" data-appid="settings">
-                <div class="delete-badge">−</div>
-                <img src="https://cdn-icons-png.flaticon.com/512/3524/3524659.png">
-                <span>Einstellungen</span>
-            </div>
+            <!-- Wird dynamisch pro User generiert -->
         </div>
 
         <!-- Schwebendes Dock -->
         <div id="dock-container">
             <div id="dock">
                 <div class="app-icon" onclick="openWin('settings')"><img src="https://cdn-icons-png.flaticon.com/512/3524/3524659.png"></div>
-                <!-- Original App Store Design aus CSS -->
                 <div class="app-icon" onclick="openWin('appstore')">
                     <div class="appstore-logo-css"><div class="stick-3"></div></div>
                 </div>
@@ -401,62 +365,54 @@
 
         <!-- SAFARI -->
         <div id="win-safari" class="app-window">
-            <div class="app-header">
-                <button class="win-close" onclick="closeWin('safari')"></button>
-                <div class="app-title">Safari</div>
-                <div style="width:13px;"></div>
-            </div>
-            <div class="app-content">
-                <iframe src="https://www.wikipedia.org" style="width:100%; height:100%; border:none;"></iframe>
-            </div>
+            <div class="app-header"><button class="win-close" onclick="closeWin('safari')"></button><div class="app-title">Safari</div><div style="width:13px;"></div></div>
+            <div class="app-content"><iframe src="https://www.wikipedia.org" style="width:100%; height:100%; border:none;"></iframe></div>
         </div>
 
         <!-- NOTIZEN -->
         <div id="win-notes" class="app-window">
-            <div class="app-header">
-                <button class="win-close" onclick="closeWin('notes')"></button>
-                <div class="app-title">Notizen</div>
-                <div style="width:13px;"></div>
-            </div>
+            <div class="app-header"><button class="win-close" onclick="closeWin('notes')"></button><div class="app-title">Notizen</div><div style="width:13px;"></div></div>
             <div class="app-content" style="padding: 20px;">
-                <textarea placeholder="Neue Notiz..." style="width:100%; height:100%; border:none; resize:none; font-size:18px; outline:none; background:transparent; color:inherit;"></textarea>
+                <textarea id="notes-textarea" placeholder="Deine Gedanken... (wird automatisch auf deinem Account gespeichert)" style="width:100%; height:100%; border:none; resize:none; font-size:18px; outline:none; background:transparent; color:inherit;" oninput="saveNotes()"></textarea>
             </div>
         </div>
 
-        <!-- SETTINGS APP (EINSTELLUNGEN) -->
+        <!-- EINSTELLUNGEN -->
         <div id="win-settings" class="app-window">
-            <div class="app-header">
-                <button class="win-close" onclick="closeWin('settings')"></button>
-                <div class="app-title">Einstellungen</div>
-                <div style="width:13px;"></div>
-            </div>
+            <div class="app-header"><button class="win-close" onclick="closeWin('settings')"></button><div class="app-title">Einstellungen</div><div style="width:13px;"></div></div>
             <div class="app-content">
                 <div class="settings-sidebar">
                     <div class="settings-menu-item active" onclick="switchSettingsPanel('general', this)">⚙️ Allgemein</div>
                     <div class="settings-menu-item" onclick="switchSettingsPanel('display', this)">☀️ Anzeige & Helligkeit</div>
                     <div class="settings-menu-item" onclick="switchSettingsPanel('wallpaper', this)">🖼️ Hintergrundbild</div>
+                    <div class="settings-menu-item" onclick="switchSettingsPanel('security', this)">🔒 FaceID & Code</div>
                 </div>
                 
                 <!-- Panel Allgemein -->
                 <div id="set-panel-general" class="settings-panel active">
                     <h2>Allgemein</h2>
-                    <hr style="opacity:0.2; margin:10px 0;">
-                    <p><strong>Name:</strong> iPad Simulator Pro</p>
-                    <p><strong>Modell:</strong> Software-Simulation (2026 Edition)</p>
-                    <p><strong>Version:</strong> iPadOS 19.4</p>
-                    <p style="margin-top:20px; color:#8e8e93; font-size:13px;">Entwickelt für GitHub Veröffentlichung.</p>
+                    <div class="settings-card">
+                        <div class="settings-row"><span>iPad-Name</span><span id="set-info-user" style="color:#8e8e93">Gast</span></div>
+                        <div class="settings-row"><span>Modell</span><span style="color:#8e8e93">iPad Pro (2026 Sandbox)</span></div>
+                        <div class="settings-row"><span>Softwareversion</span><span style="color:#8e8e93">iPadOS 19.5 (Stable)</span></div>
+                    </div>
+                    <div class="settings-card">
+                        <div class="settings-row"><span>Speicherplatz</span><span style="color:#34c759; font-weight:600;">512 GB frei</span></div>
+                    </div>
+                    <button class="auth-btn" style="background:#ff3b30;" onclick="logout()">iPad sperren / Abmelden</button>
                 </div>
 
                 <!-- Panel Anzeige -->
                 <div id="set-panel-display" class="settings-panel">
                     <h2>Anzeige & Helligkeit</h2>
-                    <hr style="opacity:0.2; margin:10px 0;">
-                    <div style="display:flex; justify-content:between; align-items:center; width:100%; justify-content: space-between;">
-                        <span>Echter Dark Mode</span>
-                        <label class="switch">
-                            <input type="checkbox" id="darkmode-toggle" onchange="toggleDarkMode()">
-                            <span class="slider"></span>
-                        </label>
+                    <div class="settings-card">
+                        <div class="settings-row">
+                            <span>Echter Dark Mode</span>
+                            <label class="switch">
+                                <input type="checkbox" id="darkmode-toggle" onchange="toggleDarkMode()">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
                     </div>
                 </div>
 
@@ -464,83 +420,276 @@
                 <div id="set-panel-wallpaper" class="settings-panel">
                     <h2>Hintergrundbild wählen</h2>
                     <div class="wallpaper-grid">
-                        <div class="wp-thumb selected" style="background-image:url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=300')" onclick="changeWallpaper('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200', this)"></div>
-                        <div class="wp-thumb" style="background-image:url('https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?q=80&w=300')" onclick="changeWallpaper('https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?q=80&w=1200', this)"></div>
-                        <div class="wp-thumb" style="background-image:url('https://images.unsplash.com/photo-1604871000636-074fa5117945?q=80&w=300')" onclick="changeWallpaper('https://images.unsplash.com/photo-1604871000636-074fa5117945?q=80&w=1200', this)"></div>
-                        <div class="wp-thumb" style="background-image:url('https://images.unsplash.com/photo-1541701494587-cb58502866ab?q=80&w=300')" onclick="changeWallpaper('https://images.unsplash.com/photo-1541701494587-cb58502866ab?q=80&w=1200', this)"></div>
+                        <div class="wp-thumb" id="wp1" style="background-image:url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=300')" onclick="changeWallpaper('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200', 'wp1')"></div>
+                        <div class="wp-thumb" id="wp2" style="background-image:url('https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?q=80&w=300')" onclick="changeWallpaper('https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?q=80&w=1200', 'wp2')"></div>
+                        <div class="wp-thumb" id="wp3" style="background-image:url('https://images.unsplash.com/photo-1604871000636-074fa5117945?q=80&w=300')" onclick="changeWallpaper('https://images.unsplash.com/photo-1604871000636-074fa5117945?q=80&w=1200', 'wp3')"></div>
+                        <div class="wp-thumb" id="wp4" style="background-image:url('https://images.unsplash.com/photo-1541701494587-cb58502866ab?q=80&w=300')" onclick="changeWallpaper('https://images.unsplash.com/photo-1541701494587-cb58502866ab?q=80&w=1200', 'wp4')"></div>
                     </div>
+                </div>
+
+                <!-- Panel Security -->
+                <div id="set-panel-security" class="settings-panel">
+                    <h2>FaceID & Code</h2>
+                    <div class="settings-card">
+                        <div class="settings-row"><span>FaceID Simulation</span><span style="color:#34c759">Aktiviert</span></div>
+                        <div class="settings-row"><span>Passcode Status</span><span style="color:#8e8e93">Verschlüsselt im Browser</span></div>
+                    </div>
+                    <p style="font-size:12px; color:#8e8e93;">Deine Daten werden via HTML5 WebStorage geschützt lokal verwaltet.</p>
                 </div>
             </div>
         </div>
 
         <!-- APP STORE -->
         <div id="win-appstore" class="app-window">
-            <div class="app-header">
-                <button class="win-close" onclick="closeWin('appstore')"></button>
-                <div class="app-title">App Store</div>
-                <div style="width:13px;"></div>
-            </div>
+            <div class="app-header"><button class="win-close" onclick="closeWin('appstore')"></button><div class="app-title">App Store</div><div style="width:13px;"></div></div>
             <div class="app-content" style="flex-direction:column;">
-                <h2 style="padding: 20px 20px 0 20px;">Heute beliebt</h2>
+                <h2 style="padding: 20px 20px 0 20px;">Spiele & Gaming Highlights</h2>
                 <div class="store-grid">
                     <div class="store-item">
                         <div class="store-info">
-                            <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png">
-                            <div><h4>Telegram Mini</h4><p style="color:#8e8e93;font-size:12px;">Messenger</p></div>
+                            <img src="https://cdn-icons-png.flaticon.com/512/528/528105.png">
+                            <div><h4>Flappy Block</h4><p style="color:#8e8e93;font-size:12px;">Retro-Arcade</p></div>
                         </div>
-                        <button id="btn-tg" class="btn-get" onclick="install('tg', 'Telegram Mini', 'https://cdn-icons-png.flaticon.com/512/2111/2111646.png')">LADEN</button>
+                        <button id="btn-gameflappy" class="btn-get" onclick="install('gameflappy', 'Flappy Block', 'https://cdn-icons-png.flaticon.com/512/528/105.png', true)">LADEN</button>
                     </div>
                     <div class="store-item">
                         <div class="store-info">
-                            <img src="https://cdn-icons-png.flaticon.com/512/564/564429.png">
-                            <div><h4>Mini Paint</h4><p style="color:#8e8e93;font-size:12px;">Kreativität</p></div>
+                            <img src="https://cdn-icons-png.flaticon.com/512/1043/1043444.png">
+                            <div><h4>Clicker Tycoon</h4><p style="color:#8e8e93;font-size:12px;">Endlos-Spaß</p></div>
                         </div>
-                        <button id="btn-paint" class="btn-get" onclick="install('paint', 'Mini Paint', 'https://cdn-icons-png.flaticon.com/512/564/564429.png')">LADEN</button>
+                        <button id="btn-gameclicker" class="btn-get" onclick="install('gameclicker', 'Clicker Pro', 'https://cdn-icons-png.flaticon.com/512/1043/1043444.png', true)">LADEN</button>
+                    </div>
+                    <div class="store-item">
+                        <div class="store-info">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3068/3068321.png">
+                            <div><h4>Ping Pong</h4><p style="color:#8e8e93;font-size:12px;">Klassiker</p></div>
+                        </div>
+                        <button id="btn-gamepong" class="btn-get" onclick="install('gamepong', 'Ping Pong', 'https://cdn-icons-png.flaticon.com/512/3068/3068321.png', true)">LADEN</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- DYNAMISCH GEÖFFNETE SYSTEM APPS (TELEGRAM & PAINT SIMULATOREN) -->
-        <div id="win-tg" class="app-window"><div class="app-header"><button class="win-close" onclick="closeWin('tg')"></button><div class="app-title">Telegram Mini</div><div style="width:13px;"></div></div><div class="app-content" style="padding:15px;flex-direction:column;gap:10px;"><div style="background:#eef2f3;padding:10px;border-radius:10px;color:#333;"><b>Support Bot:</b> Willkommen im iPad-OS Messenger!</div><input placeholder="Nachricht schreiben..." style="padding:12px;border:1px solid #ddd;border-radius:8px;outline:none;margin-top:auto;"></div></div>
-        <div id="win-paint" class="app-window"><div class="app-header"><button class="win-close" onclick="closeWin('paint')"></button><div class="app-title">Mini Paint</div><div style="width:13px;"></div></div><div class="app-content" style="flex-direction:column;"><canvas id="paintCanvas" width="800" height="400" style="background:#fff;flex-grow:1;"></canvas><button onclick="document.getElementById('paintCanvas').getContext('2d').clearRect(0,0,800,400)" style="padding:10px;background:#ff3b30;color:white;border:none;">Leeren</button></div></div>
+        <!-- --- REALE DOWNLOADBARE SPIELE FENSTER --- -->
+        
+        <!-- FLAPPY BLOCK GAME -->
+        <div id="win-gameflappy" class="app-window">
+            <div class="app-header"><button class="win-close" onclick="closeWin('gameflappy')"></button><div class="app-title">Flappy Block</div><div style="width:13px;"></div></div>
+            <div class="app-content">
+                <div class="game-container">
+                    <canvas id="flappyCanvas" width="400" height="350" class="game-canvas"></canvas>
+                    <p style="margin-top:10px; font-size:13px;">Klicke / Touche das Feld zum Fliegen!</p>
+                    <button class="auth-btn" style="width:120px; padding:6px; margin-top:5px;" onclick="initFlappy()">Start</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CLICKER TYCOON -->
+        <div id="win-gameclicker" class="app-window">
+            <div class="app-header"><button class="win-close" onclick="closeWin('gameclicker')"></button><div class="app-title">Clicker Tycoon</div><div style="width:13px;"></div></div>
+            <div class="app-content" style="padding:30px; flex-direction:column; align-items:center; justify-content:center; gap:20px;">
+                <h1 id="clicker-score" style="font-size:48px;">0 💎</h1>
+                <div id="clicker-btn" style="width:130px; height:130px; background:linear-gradient(135deg, #ff9500, #ffcc00); border-radius:50%; display:flex; justify-content:center; align-items:center; font-size:40px; cursor:pointer; box-shadow:0 10px 20px rgba(0,0,0,0.2);" onclick="doClick()">💎</div>
+                <button class="auth-btn" style="width:200px;" onclick="upgradeClicker()">Upgrade (+1 pro Klick) - Kosten: <span id="clicker-cost">15</span></button>
+            </div>
+        </div>
+
+        <!-- PING PONG -->
+        <div id="win-gamepong" class="app-window">
+            <div class="app-header"><button class="win-close" onclick="closeWin('gamepong')"></button><div class="app-title">Ping Pong</div><div style="width:13px;"></div></div>
+            <div class="app-content">
+                <div class="game-container">
+                    <canvas id="pongCanvas" width="480" height="320" class="game-canvas"></canvas>
+                    <p style="margin-top:10px; font-size:13px;">Bewege die Maus/Finger im Kasten um das Paddel zu steuern.</p>
+                </div>
+            </div>
+        </div>
 
     </div>
 </div>
 
 <script>
-    // System-Clock
+    // System Kernvariablen
+    let currentUser = null;
+    let userDatabase = JSON.parse(localStorage.getItem('ipad_users')) || {};
+    let activeApps = ['safari', 'notes', 'settings']; 
+    let longPressTimer;
+    let currentWallpaperId = 'wp1';
+
+    // Kalender & Uhrzeit
     function updateClock() {
         const d = new Date();
-        document.getElementById('current-time').innerText = d.toLocaleTimeString('de-DE', {hour: '2-digit', minute:'2-digit'});
+        const timeStr = d.toLocaleTimeString('de-DE', {hour: '2-digit', minute:'2-digit'});
+        document.getElementById('current-time').innerText = timeStr;
+        document.getElementById('lock-time').innerText = timeStr;
+        
+        const options = { weekday: 'long', day: 'numeric', month: 'long' };
+        const dateStr = d.toLocaleDateString('de-DE', options);
+        document.getElementById('lock-date').innerText = dateStr;
     }
     setInterval(updateClock, 1000); updateClock();
 
-    // Window Management
+    // --- MULTI-USER SYSTEM ---
+    function toggleAuthBoxes(showLogin) {
+        document.getElementById('auth-login-box').style.display = showLogin ? 'block' : 'none';
+        document.getElementById('auth-register-box').style.display = showLogin ? 'none' : 'block';
+    }
+
+    function handleRegister() {
+        const u = document.getElementById('reg-user').value.trim();
+        const p = document.getElementById('reg-pass').value.trim();
+        if(!u || !p) return alert('Bitte Name und Passcode ausfüllen!');
+        if(userDatabase[u]) return alert('Dieser Benutzer existiert bereits!');
+
+        // Struktur für neuen User Account erstellen
+        userDatabase[u] = {
+            passcode: p,
+            wallpaper: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200',
+            wallpaperId: 'wp1',
+            apps: ['safari', 'notes', 'settings'],
+            notesData: '',
+            darkMode: false
+        };
+        localStorage.setItem('ipad_users', JSON.stringify(userDatabase));
+        alert('Registrierung erfolgreich! Du kannst dich jetzt einloggen.');
+        toggleAuthBoxes(true);
+    }
+
+    function handleLogin() {
+        const u = document.getElementById('login-user').value.trim();
+        const p = document.getElementById('login-pass').value.trim();
+
+        if(userDatabase[u] && userDatabase[u].passcode === p) {
+            currentUser = u;
+            loadUserAccount();
+        } else {
+            alert('Falscher Benutzername oder Passcode!');
+        }
+    }
+
+    function loadUserAccount() {
+        const userData = userDatabase[currentUser];
+        
+        // UI auf User anpassen
+        document.getElementById('user-display-tag').innerText = currentUser;
+        document.getElementById('set-info-user').innerText = currentUser;
+        document.getElementById('notes-textarea').value = userData.notesData || '';
+        
+        // Wallpaper laden
+        document.getElementById('screen').style.backgroundImage = `url('${userData.wallpaper}')`;
+        document.querySelectorAll('.wp-thumb').forEach(el => el.classList.remove('selected'));
+        if(document.getElementById(userData.wallpaperId)) {
+            document.getElementById(userData.wallpaperId).classList.add('selected');
+        }
+
+        // DarkMode laden
+        if(userData.darkMode) {
+            document.querySelectorAll('.app-window').forEach(w => w.classList.add('dark-mode'));
+            document.getElementById('darkmode-toggle').checked = true;
+        } else {
+            document.querySelectorAll('.app-window').forEach(w => w.classList.remove('dark-mode'));
+            document.getElementById('darkmode-toggle').checked = false;
+        }
+
+        // Apps bauen
+        activeApps = userData.apps || ['safari', 'notes', 'settings'];
+        buildHomescreen();
+
+        // Lockscreen ausblenden
+        document.getElementById('lockscreen').style.transform = 'translateY(-100%)';
+        document.getElementById('lockscreen').style.opacity = '0';
+    }
+
+    function saveUserData() {
+        if(!currentUser) return;
+        userDatabase[currentUser].apps = activeApps;
+        userDatabase[currentUser].notesData = document.getElementById('notes-textarea').value;
+        localStorage.setItem('ipad_users', JSON.stringify(userDatabase));
+    }
+
+    function logout() {
+        saveUserData();
+        currentUser = null;
+        closeAll();
+        document.getElementById('lockscreen').style.transform = 'translateY(0)';
+        document.getElementById('lockscreen').style.opacity = '1';
+        document.getElementById('login-user').value = '';
+        document.getElementById('login-pass').value = '';
+    }
+
+    function saveNotes() {
+        if(currentUser) {
+            userDatabase[currentUser].notesData = document.getElementById('notes-textarea').value;
+            localStorage.setItem('ipad_users', JSON.stringify(userDatabase));
+        }
+    }
+
+    // --- HOMESCREEN ARCHITEKTUR ---
+    const appMeta = {
+        safari: { name: 'Safari', img: 'https://cdn-icons-png.flaticon.com/512/300/300214.png' },
+        notes: { name: 'Notizen', img: 'https://cdn-icons-png.flaticon.com/512/889/889649.png' },
+        settings: { name: 'Einstellungen', img: 'https://cdn-icons-png.flaticon.com/512/3524/3524659.png' },
+        gameflappy: { name: 'Flappy Block', img: 'https://cdn-icons-png.flaticon.com/512/528/528105.png' },
+        gameclicker: { name: 'Clicker Pro', img: 'https://cdn-icons-png.flaticon.com/512/1043/1043444.png' },
+        gamepong: { name: 'Ping Pong', img: 'https://cdn-icons-png.flaticon.com/512/3068/3068321.png' }
+    };
+
+    function buildHomescreen() {
+        const grid = document.getElementById('homescreen');
+        grid.innerHTML = ''; // Leeren
+        
+        activeApps.forEach(appId => {
+            if(!appMeta[appId]) return;
+            const app = appMeta[appId];
+            const div = document.createElement('div');
+            div.className = 'app-icon';
+            div.setAttribute('draggable', 'true');
+            div.setAttribute('data-appid', appId);
+            div.innerHTML = `<div class="delete-badge">−</div><img src="${app.img}"><span>${app.name}</span>`;
+            
+            attachAppListeners(div);
+            grid.appendChild(div);
+        });
+
+        // App Store Button Status updaten
+        document.querySelectorAll('.btn-get').forEach(btn => {
+            const id = btn.id.replace('btn-', '');
+            if(activeApps.includes(id)) {
+                btn.innerText = 'ÖFFNEN'; btn.classList.add('installed');
+            } else {
+                btn.innerText = 'LADEN'; btn.classList.remove('installed');
+            }
+        });
+    }
+
+    // --- WINDOW MANAGEMENT ---
     let topZ = 100;
     function openWin(id) {
-        // Ignorieren, wenn wir im Wackelmodus sind
         if(document.body.classList.contains('wiggle-active')) return;
-        
         const w = document.getElementById(`win-${id}`);
+        if(!w) return;
         w.style.display = 'flex';
         topZ++; w.style.zIndex = topZ;
         setTimeout(() => w.classList.add('active'), 10);
 
-        if(id === 'paint') initPaint();
+        if(id === 'gamepong') initPong();
     }
     function closeWin(id) {
         const w = document.getElementById(`win-${id}`);
-        w.classList.remove('active');
-        setTimeout(() => w.style.display = 'none', 200);
+        if(w) {
+            w.classList.remove('active');
+            setTimeout(() => w.style.display = 'none', 200);
+        }
     }
     function closeAll() {
-        document.querySelectorAll('.app-window').forEach(w => { w.classList.remove('active'); setTimeout(() => w.style.display='none', 200); });
-        // Beende Wackelmodus bei Klick auf Home Bar
+        document.querySelectorAll('.app-window').forEach(w => {
+            w.classList.remove('active');
+            setTimeout(() => w.style.display='none', 200);
+        });
         endWiggleMode();
     }
 
-    // Settings-Steuerung
+    // --- SETTINGS STEUERUNG ---
     function switchSettingsPanel(panelId, element) {
         document.querySelectorAll('.settings-menu-item').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.settings-panel').forEach(el => el.classList.remove('active'));
@@ -548,95 +697,78 @@
         document.getElementById(`set-panel-${panelId}`).classList.add('active');
     }
     function toggleDarkMode() {
-        document.getElementById('win-settings').classList.toggle('dark-mode');
-        document.getElementById('win-appstore').classList.toggle('dark-mode');
-        document.getElementById('win-notes').classList.toggle('dark-mode');
-        document.getElementById('win-tg').classList.toggle('dark-mode');
+        const active = document.getElementById('darkmode-toggle').checked;
+        document.querySelectorAll('.app-window').forEach(w => {
+            if(active) w.classList.add('dark-mode'); else w.classList.remove('dark-mode');
+        });
+        if(currentUser) {
+            userDatabase[currentUser].darkMode = active;
+            localStorage.setItem('ipad_users', JSON.stringify(userDatabase));
+        }
     }
-    function changeWallpaper(url, thumb) {
+    function changeWallpaper(url, id) {
         document.querySelectorAll('.wp-thumb').forEach(el => el.classList.remove('selected'));
-        thumb.classList.add('selected');
+        document.getElementById(id).classList.add('selected');
         document.getElementById('screen').style.backgroundImage = `url('${url}')`;
+        if(currentUser) {
+            userDatabase[currentUser].wallpaper = url;
+            userDatabase[currentUser].wallpaperId = id;
+            localStorage.setItem('ipad_users', JSON.stringify(userDatabase));
+        }
     }
 
-    // App Installer System
-    let installedAppsList = ['safari', 'notes', 'settings'];
-    
-    function install(id, name, img) {
+    // --- APP INSTALLATION ---
+    function install(id, name, img, isGame) {
+        if(activeApps.includes(id)) { openWin(id); return; }
         const btn = document.getElementById(`btn-${id}`);
-        if(btn.classList.contains('installed')) return;
         btn.innerText = 'Laden...';
+        
         setTimeout(() => {
-            btn.innerText = 'ÖFFNEN'; btn.classList.add('installed');
-            installedAppsList.push(id);
-            
-            const newApp = document.createElement('div');
-            newApp.className = 'app-icon';
-            newApp.id = `app-${id}-icon`;
-            newApp.setAttribute('draggable', 'true');
-            newApp.setAttribute('data-appid', id);
-            newApp.innerHTML = `<div class="delete-badge">−</div><img src="${img}"><span>${name}</span>`;
-            
-            document.getElementById('homescreen').appendChild(newApp);
-            
-            // Re-Init Listeners für Drag & Drop und Long-Press
-            attachAppListeners(newApp);
-        }, 800);
+            activeApps.push(id);
+            saveUserData();
+            buildHomescreen();
+        }, 600);
     }
 
-    // --- JIGGLE MODE, DELETE & DRAG AND DROP ---
-    let longPressTimer;
-    
+    // --- WACKELMODUS (DRAG / DROP / DELETE) ---
     function startWiggleMode() {
         document.body.classList.add('wiggle-active');
-        document.querySelectorAll('#homescreen .app-icon').forEach(app => {
-            app.classList.add('wiggling');
-        });
+        document.querySelectorAll('#homescreen .app-icon').forEach(app => app.classList.add('wiggling'));
     }
-
     function endWiggleMode() {
         document.body.classList.remove('wiggle-active');
-        document.querySelectorAll('#homescreen .app-icon').forEach(app => {
-            app.classList.remove('wiggling');
-        });
+        document.querySelectorAll('#homescreen .app-icon').forEach(app => app.classList.remove('wiggling'));
     }
 
     function attachAppListeners(app) {
-        // App öffnen Klick (nur wenn nicht gewackelt wird)
         app.addEventListener('click', (e) => {
+            const id = app.dataset.appid;
             if(document.body.classList.contains('wiggle-active')) {
-                // Wenn auf das Minus geklickt wurde: Löschen
                 if(e.target.classList.contains('delete-badge')) {
-                    app.remove();
-                    installedAppsList = installedAppsList.filter(item => item !== app.dataset.appid);
-                    const storeBtn = document.getElementById(`btn-${app.dataset.appid}`);
-                    if(storeBtn) { storeBtn.innerText = 'LADEN'; storeBtn.classList.remove('installed'); }
+                    activeApps = activeApps.filter(item => item !== id);
+                    saveUserData();
+                    buildHomescreen();
                 }
                 return;
             }
-            openWin(app.dataset.appid);
+            openWin(id);
         });
 
-        // Long Press für Wackelmodus (Sowohl Maus als auch Touch)
         ['touchstart', 'mousedown'].forEach(evt => {
-            app.addEventListener(evt, () => {
-                longPressTimer = setTimeout(startWiggleMode, 800);
-            });
+            app.addEventListener(evt, () => longPressTimer = setTimeout(startWiggleMode, 800));
         });
         ['touchend', 'mouseup', 'mouseleave'].forEach(evt => {
             app.addEventListener(evt, () => clearTimeout(longPressTimer));
         });
 
-        // HTML5 Drag & Drop Schnittstelle
         app.addEventListener('dragstart', (e) => {
             if(!document.body.classList.contains('wiggle-active')) { e.preventDefault(); return; }
             app.classList.add('dragging');
         });
-
         app.addEventListener('dragend', () => app.classList.remove('dragging'));
     }
 
-    // Setup Grid Re-Ordering Events
+    // Grid Umsortierungs-Logik
     const grid = document.getElementById('homescreen');
     grid.addEventListener('dragover', (e) => {
         e.preventDefault();
@@ -648,39 +780,94 @@
             return e.clientX <= box.left + box.width / 2 && e.clientY <= box.top + box.height / 2;
         });
         grid.insertBefore(draggingItem, nextSibling);
+        
+        // Array Reihenfolge neu mappen & speichern
+        const newOrder = [...grid.querySelectorAll('.app-icon')].map(el => el.dataset.appid);
+        activeApps = newOrder;
+        saveUserData();
     });
 
-    // Initialisiere alle existierenden Starter-Apps
-    document.querySelectorAll('#homescreen .app-icon').forEach(attachAppListeners);
 
-    // --- INTEGRATED MINI DRAW APP (PAINT) ---
-    function initPaint() {
-        const cv = document.getElementById('paintCanvas');
-        const cx = cv.getContext('2d');
-        let drawing = false;
+    // ---------------- SPIELE-ENGINES ----------------
+
+    // 1. CLICKER TYCOON ENGINE
+    let clicks = 0; let clickMultiplier = 1; let upgradeCost = 15;
+    function doClick() {
+        clicks += clickMultiplier;
+        document.getElementById('clicker-score').innerText = clicks + " 💎";
+    }
+    function upgradeClicker() {
+        if(clicks >= upgradeCost) {
+            clicks -= upgradeCost;
+            clickMultiplier++;
+            upgradeCost = Math.round(upgradeCost * 1.6);
+            document.getElementById('clicker-score').innerText = clicks + " 💎";
+            document.getElementById('clicker-cost').innerText = upgradeCost;
+        } else { alert('Nicht genug Diamanten!'); }
+    }
+
+    // 2. FLAPPY BLOCK ENGINE
+    let flappyInterval;
+    function initFlappy() {
+        const cv = document.getElementById('flappyCanvas'); const cx = cv.getContext('2d');
+        let birdY = 150; let birdV = 0; let score = 0; let pipes = [];
+        clearInterval(flappyInterval);
         
-        function getPos(e) {
+        cv.onclick = () => { birdV = -5; };
+        pipes = [{x: 400, y: 100}];
+
+        flappyInterval = setInterval(() => {
+            birdV += 0.3; birdY += birdV;
+            cx.clearRect(0,0,400,350);
+            
+            cx.fillStyle = '#ff9500'; cx.fillRect(50, birdY, 20, 20); // Vogel
+            
+            if(birdY > 350 || birdY < 0) { clearInterval(flappyInterval); alert('Game Over! Score: ' + score); }
+            
+            cx.fillStyle = '#34c759';
+            pipes.forEach((p, i) => {
+                p.x -= 2;
+                cx.fillRect(p.x, 0, 30, p.y);
+                cx.fillRect(p.x, p.y + 90, 30, 350);
+                
+                if(p.x === 180) pipes.push({x: 400, y: Math.floor(Math.random()*150)+50});
+                if(p.x === 50) { score++; }
+                
+                // Kollisions-Check
+                if(p.x < 70 && p.x > 30 && (birdY < p.y || birdY > p.y + 70)) {
+                    clearInterval(flappyInterval); alert('Game Over! Score: ' + score);
+                }
+            });
+            cx.fillStyle = '#fff'; cx.font = '16px sans-serif'; cx.fillText("Score: "+score, 10, 25);
+        }, 20);
+    }
+
+    // 3. PING PONG ENGINE
+    function initPong() {
+        const cv = document.getElementById('pongCanvas'); const cx = cv.getContext('2d');
+        let padX = 200; let ballX = 240; let ballY = 160; let dx = 3; let dy = -3;
+        
+        cv.onmousemove = (e) => {
             let rect = cv.getBoundingClientRect();
-            let clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            let clientY = e.touches ? e.touches[0].clientY : e.clientY;
-            return { x: clientX - rect.left, y: clientY - rect.top };
-        }
+            padX = (e.clientX - rect.left) - 40;
+        };
         
-        function start(e) { drawing = true; draw(e); }
-        function stop() { drawing = false; cx.beginPath(); }
-        
-        function draw(e) {
-            if(!drawing) return;
-            let pos = getPos(e);
-            cx.lineWidth = 4; cx.lineCap = 'round'; cx.strokeStyle = '#007aff';
-            cx.lineTo(pos.x, pos.y); cx.stroke(); cx.beginPath(); cx.moveTo(pos.x, pos.y);
+        function drawPong() {
+            if(document.getElementById('win-gamepong').style.display === 'none') return;
+            cx.clearRect(0,0,480,320);
+            cx.fillStyle = '#007aff'; cx.fillRect(padX, 300, 80, 10); // Paddel
+            cx.fillStyle = '#ff3b30'; cx.beginPath(); cx.arc(ballX, ballY, 8, 0, Math.PI*2); cx.fill(); // Ball
+            
+            ballX += dx; ballY += dy;
+            if(ballX < 8 || ballX > 472) dx = -dx;
+            if(ballY < 8) dy = -dy;
+            if(ballY > 292 && ballX > padX && ballX < padX + 80) dy = -dy;
+            if(ballY > 320) { ballX = 240; ballY = 160; dy = -3; alert('Verloren! Neuer Versuch.'); }
+            
+            requestAnimationFrame(drawPong);
         }
-
-        cv.onmousedown = start; cv.onmouseup = stop; cv.onmousemove = draw;
-        cv.ontouchstart = (e) => { start(e); e.preventDefault(); };
-        cv.ontouchend = stop; cv.ontouchmove = (e) => { draw(e); e.preventDefault(); };
+        drawPong();
     }
 </script>
-
 </body>
 </html>
