@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Lover Finder 💘</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap');
+
+body {
+  margin: 0;
+  font-family: Poppins;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at top, #ff4d6d, #1a001f);
+  overflow: hidden;
+}
+
+/* 🤍 SPLASH SCREEN */
+#splash {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  transition: opacity 0.8s ease;
+}
+
+.loader {
+  font-size: 50px;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+.hide {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 💎 APP CARD */
+.container {
+  width: 380px;
+  padding: 30px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255,255,255,0.2);
+  text-align: center;
+  color: white;
+}
+
+h1 { margin-bottom: 10px; }
+
+input {
+  width: 90%;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 12px;
+  border: none;
+  text-align: center;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #ff2e63, #ff6b81);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover { transform: scale(1.05); }
+
+.result {
+  margin-top: 18px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* ❤️ HEARTS */
+.heart {
+  position: fixed;
+  top: -10px;
+  font-size: 18px;
+  color: #ff2e63;
+  animation: fall linear forwards;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(110vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* 🎉 CONFETTI */
+.confetti {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  top: -10px;
+  animation: fallc 3s linear forwards;
+}
+
+@keyframes fallc {
+  to {
+    transform: translateY(110vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- 🤍 SPLASH -->
+<div id="splash">
+  <div class="loader">💘</div>
+</div>
+
+<div class="container">
+  <h1>💘 Lover Finder</h1>
+
+  <input type="text" id="name1" placeholder="Dein Name">
+  <input type="text" id="name2" placeholder="Crush Name">
+
+  <button onclick="calculate()">💖 Match</button>
+
+  <div class="result" id="result"></div>
+</div>
+
+<script>
+
+// 🤍 Splash hide
+window.onload = function () {
+  setTimeout(() => {
+    document.getElementById("splash").classList.add("hide");
+
+    setTimeout(() => {
+      document.getElementById("splash").style.display = "none";
+    }, 800);
+
+  }, 1200);
+};
+
+// 🔥 FIXED MATCHES
+const fixed = {
+  "eko-mia": 99,
+  "maefin-mia": 99
+};
+
+// 🔢 stabiler Hash
+function hashCode(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash * 31 + str.charCodeAt(i)) % 1000;
+  }
+  return Math.abs(hash);
+}
+
+// ❤️ Hearts
+function hearts() {
+  for (let i = 0; i < 20; i++) {
+    let h = document.createElement("div");
+    h.className = "heart";
+    h.innerHTML = "💖";
+    h.style.left = Math.random() * 100 + "vw";
+    h.style.animationDuration = (Math.random() * 3 + 2) + "s";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 5000);
+  }
+}
+
+// 🎉 Confetti
+function confetti() {
+  for (let i = 0; i < 40; i++) {
+    let c = document.createElement("div");
+    c.className = "confetti";
+    c.style.left = Math.random() * 100 + "vw";
+    c.style.background = ["#ff2e63","#ffcc00","#00e5ff","#9d4edd","#ff6b81"][Math.floor(Math.random()*5)];
+    c.style.animationDuration = (Math.random() * 2 + 2) + "s";
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 4000);
+  }
+}
+
+function calculate() {
+
+  let n1 = document.getElementById("name1").value.trim().toLowerCase();
+  let n2 = document.getElementById("name2").value.trim().toLowerCase();
+
+  // 🚨 IMMER GLEICHE REIHENFOLGE
+  let sorted = [n1, n2].sort();
+  let key = sorted[0] + "-" + sorted[1];
+
+  let result = document.getElementById("result");
+
+  // 💘 FIXED MATCH
+  if (fixed[key] !== undefined) {
+    result.innerHTML = "💘 " + fixed[key] + "% PERFECT MATCH ❤️🔥";
+    hearts();
+    confetti();
+    return;
+  }
+
+  // 🔢 STABILER MATCH
+  let combined = sorted[0] + sorted[1];
+  let base = hashCode(combined);
+  let percent = 60 + (base % 41);
+
+  let text =
+    percent >= 90 ? "❤️ Perfekt"
+  : percent >= 80 ? "💞 Sehr gut"
+  : percent >= 70 ? "💛 Gut"
+  : "💔 Schwach";
+
+  result.innerHTML = "💘 " + percent + "% - " + text;
+
+  if (percent >= 80) {
+    hearts();
+    confetti();
+  }
+}
+</script>
+
+</body>
+</html>
