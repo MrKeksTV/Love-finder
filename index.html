@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarDex - Auto Scanner & Social</title>
+    <style>
+        :root {
+            --bg-color: #121214;
+            --card-bg: #1e1e24;
+            --accent: #00ffcc;
+            --text: #ffffff;
+            --text-muted: #a0a0ab;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-bottom: 70px;
+        }
+        header {
+            background: #18181d;
+            padding: 15px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--accent);
+            border-bottom: 1px solid #2a2a35;
+        }
+        .container {
+            padding: 15px;
+            max-width: 600px;
+            margin: auto;
+        }
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+        /* Scanner Bereich */
+        .scanner-box {
+            background: var(--card-bg);
+            border: 2px dashed var(--accent);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .btn {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 12px 20px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        input[type="file"], input[type="text"] {
+            display: none;
+        }
+        .upload-label {
+            display: inline-block;
+            background: #2a2a35;
+            color: var(--text);
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        /* Auto Karten */
+        .car-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .car-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        .car-info {
+            padding: 15px;
+        }
+        .car-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--accent);
+        }
+        .car-specs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 10px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+        /* Navigation unten */
+        nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #18181d;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            border-top: 1px solid #2a2a35;
+        }
+        nav button {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 14px;
+            cursor: pointer;
+        }
+        nav button.active {
+            color: var(--accent);
+            font-weight: bold;
+        }
+        /* Freunde Bereich */
+        .friend-box {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+    <header>🚗 CarDex Social</header>
+
+    <div class="container">
+        
+        <!-- SEKTION 1: SCANNER & FOTO -->
+        <div id="scan-section" class="section active">
+            <h2>Auto Scannen</h2>
+            <div class="scanner-box">
+                <p>Mache ein Foto von einem Auto oder lade eins hoch, um es deiner Sammlung hinzuzufügen!</p>
+                <label class="upload-label">
+                    📷 Foto aufnehmen / Hochladen
+                    <input type="file" id="carInput" accept="image/*" onchange="processCarImage(event)">
+                </label>
+            </div>
+            <div id="scanResult"></div>
+        </div>
+
+        <!-- SEKTION 2: MEINE SAMMLUNG (INDEX) -->
+        <div id="index-section" class="section">
+            <h2>Meine Auto-Sammlung (<span id="carCount">0</span>)</h2>
+            <div id="carList">
+                <p style="color: var(--text-muted);">Noch keine Autos gescannt.</p>
+            </div>
+        </div>
+
+        <!-- SEKTION 3: FREUNDE & SAMMLUNGEN -->
+        <div id="friends-section" class="section">
+            <h2>Freunde & Autos</h2>
+            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                <input type="text" id="friendNameInput" style="display:block; flex:1; padding: 10px; background: #2a2a35; border: none; color: white; border-radius: 6px;" placeholder="Name des Freundes...">
+                <button class="btn" style="margin-top:0; width: auto;" onclick="addFriend()">Add</button>
+            </div>
+            <div id="friendsList">
+                <!-- Beispiel Freund -->
+                <div class="friend-box">
+                    <div>
+                        <strong>Kevin_99</strong>
+                        <div style="font-size: 13px; color: var(--text-muted);">3 Autos in der Garage</div>
+                    </div>
+                    <button class="btn" style="margin-top:0; padding: 6px 12px; font-size: 14px;" onclick="viewFriendGarage('Kevin_99', ['Porsche 911 GT3', 'BMW M4'])">Ansehen</button>
+                </div>
+            </div>
+            <div id="friendGarageView" style="margin-top: 20px;"></div>
+        </div>
+
+    </div>
+
+    <!-- NAVIGATION -->
+    <nav>
+        <button onclick="switchTab('scan', this)" class="active">📷 Scanner</button>
+        <button onclick="switchTab('index', this)">📂 Meine Garage</button>
+        <button onclick="switchTab('friends', this)">👥 Freunde</button>
+    </nav>
+
+    <script>
+        let myCars = [];
+
+        // Tabs umschalten
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(tabId + '-section').classList.add('active');
+            btn.classList.add('active');
+        }
+
+        // Auto Foto verarbeiten (KI Simulation)
+        function processCarImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageUrl = e.target.result;
+                
+                // Wir simulieren eine KI-Erkennung für coole Autos
+                const randomCars = [
+                    { model: "Porsche 911 GT3 RS", hp: "525 PS", speed: "296 km/h", engine: "4.0L 6-Zylinder" },
+                    { model: "BMW M4 Competition", hp: "510 PS", speed: "290 km/h", engine: "3.0L Twin-Turbo" },
+                    { model: "Audi R8 V10 Performance", hp: "620 PS", speed: "331 km/h", engine: "5.2L V10" },
+                    { model: "Tesla Model S Plaid", hp: "1020 PS", speed: "322 km/h", engine: "Tri-Motor Elektro" },
+                    { model: "Ford Mustang Shelby GT500", hp: "760 PS", speed: "290 km/h", engine: "5.2L V8 Supercharged" }
+                ];
+                
+                const detectedCar = randomCars[Math.floor(Math.random() * randomCars.length)];
+                
+                const newCar = {
+                    image: imageUrl,
+                    ...detectedCar,
+                    date: new Date().toLocaleDateString()
+                };
+
+                myCars.push(newCar);
+                updateCarIndex();
+
+                // Zeige Ergebnis im Scanner-Tab
+                document.getElementById('scanResult').innerHTML = `
+                    <div class="car-card">
+                        <img src="${imageUrl}">
+                        <div class="car-info">
+                            <div class="car-title">🎉 Erkannt: ${newCar.model}</div>
+                            <div class="car-specs">
+                                <div>⚡ Leistung: ${newCar.hp}</div>
+                                <div>🚀 Top-Speed: ${newCar.speed}</div>
+                                <div>⚙️ Motor: ${newCar.engine}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            reader.readAsDataURL(file);
+        }
+
+        // Index / Sammlung aktualisieren
+        function updateCarIndex() {
+            const carListEl = document.getElementById('carList');
+            document.getElementById('carCount').innerText = myCars.size || myCars.length;
+
+            if (myCars.length === 0) {
+                carListEl.innerHTML = '<p style="color: var(--text-muted);">Noch keine Autos gescannt.</p>';
+                return;
+            }
+
+            carListEl.innerHTML = '';
+            myCars.forEach(car => {
+                carListEl.innerHTML += `
+                    <div class="car-card">
+                        <img src="${car.image}">
+                        <div class="car-info">
+                            <div class="car-title">${car.model}</div>
+                            <div class="car-specs">
+                                <div>⚡ ${car.hp}</div>
+                                <div>🚀 ${car.speed}</div>
+                                <div>⚙️ ${car.engine}</div>
+                                <div>📅 ${car.date}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Freunde hinzufügen (Simulation)
+        function addFriend() {
+            const nameInput = document.getElementById('friendNameInput');
+            if (!nameInput.value) return;
+
+            const friendsList = document.getElementById('friendsList');
+            friendsList.innerHTML += `
+                <div class="friend-box">
+                    <div>
+                        <strong>${nameInput.value}</strong>
+                        <div style="font-size: 13px; color: var(--text-muted);">1 Auto in der Garage</div>
+                    </div>
+                    <button class="btn" style="margin-top:0; padding: 6px 12px; font-size: 14px;" onclick="viewFriendGarage('${nameInput.value}', ['Nissan Skyline R34'])">Ansehen</button>
+                </div>
+            `;
+            nameInput.value = '';
+        }
+
+        // Garage von Freunden anschauen
+        function viewFriendGarage(friendName, cars) {
+            const view = document.getElementById('friendGarageView');
+            view.innerHTML = `
+                <h3>Garage von ${friendName}:</h3>
+                <div class="friend-box" style="background:#24242d;">
+                    🚗 ${cars.join(', ')}
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
+
